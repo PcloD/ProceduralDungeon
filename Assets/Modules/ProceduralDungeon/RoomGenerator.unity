@@ -274,7 +274,7 @@ GameObject:
   - component: {fileID: 1769156739}
   - component: {fileID: 1769156738}
   m_Layer: 0
-  m_Name: RoomGenerator
+  m_Name: ProceduralDungeon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -289,15 +289,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1769156737}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36fd7fdde901fa646a7fbdbcfde7cd6a, type: 3}
+  m_Script: {fileID: 11500000, guid: 2a5122f455e8950498011c0422121c44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_mapSize:
     x: 20
     y: 0
     z: 20
-  m_mainRoomCount: 10
   m_totalRoomCount: 10
+  m_selectRoomCount: 10
   m_minRoomSize:
     x: 2
     y: 0
@@ -311,10 +311,8 @@ MonoBehaviour:
   m_drawMainRoom: 1
   m_drawMainRoomCenterBias: 0
   m_drawDelaunayTriangulation: 0
-  m_drawSpanningTree: 0
-  m_drawRoadCenters: 0
-  m_drawOptimizedRoad: 1
-  m_drawCrossedRoomRoad: 0
+  m_drawSpanningTree: 1
+  m_drawRoads: 0
 --- !u!4 &1769156739
 Transform:
   m_ObjectHideFlags: 0

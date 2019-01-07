@@ -1,34 +1,29 @@
-﻿using UnityEngine;
-
+﻿
 namespace ProceduralDungeon
 {
     [System.Serializable]
-    public struct IntVector3
+    public struct IntVector2
     {
         public int x;
-        public int y;
         public int z;
 
-        public IntVector3(int x, int y, int z)
+        public IntVector2(int x, int z)
         {
             this.x = x;
-            this.y = y;
             this.z = z;
         }
 
-        public static IntVector3 operator +(IntVector3 a, IntVector3 b)
+        public static IntVector2 operator +(IntVector2 a, IntVector2 b)
         {
             a.x += b.x;
-            a.y += b.y;
             a.z += b.z;
 
             return a;
         }
 
-        public static IntVector3 operator -(IntVector3 a, IntVector3 b)
+        public static IntVector2 operator -(IntVector2 a, IntVector2 b)
         {
             a.x -= b.x;
-            a.y -= b.y;
             a.z -= b.z;
 
             return a;
