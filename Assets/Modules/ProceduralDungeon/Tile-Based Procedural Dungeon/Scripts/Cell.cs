@@ -12,8 +12,6 @@ namespace ProceduralDungeon.SpanningTree
             North,
         }
 
-        private const string WALL_ASSET_NAME = "Cell_Wall";
-
         public Vector3 Center { get { return m_center; } }
         public bool IsWall { get { return m_isWall; } set { m_isWall = value; } }
         public GameObject Root { get { return m_root; } }
@@ -23,15 +21,16 @@ namespace ProceduralDungeon.SpanningTree
         private GameObject m_root;
         private Cell[] m_neighborCells;
 
-        public Cell(Transform parent, int w, int h, bool isWall)
+        public Cell(Transform parent, GameObject wallObj, int w, int h, bool isWall)
         {
             m_center = new Vector3(w, 0, h);
             m_isWall = isWall;
 
             if(isWall)
             {
-                m_root = GameObject.Instantiate(Resources.Load(WALL_ASSET_NAME) as GameObject);
-                m_root.name = string.Format("Cell {0}, {1}, {2}", m_center.x, m_center.y, m_center.z);
+                m_root = GameObject.Instantiate(wallObj as GameObject);
+                m_root.name = string.Format("Wall {0}, {1}, {2}", m_center.x, m_center.y, m_center.z);
+                m_root.SetActive(true);
                 m_root.transform.SetParent(parent);
                 m_root.transform.localPosition = m_center;
             }

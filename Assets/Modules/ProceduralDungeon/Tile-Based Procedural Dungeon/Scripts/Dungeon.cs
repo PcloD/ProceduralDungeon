@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using SpanningTree;
 
@@ -17,7 +16,8 @@ namespace ProceduralDungeon.SpanningTree
         public BaseSpanningTree SpanningTree { get { return m_spanningTree; } }
 
         private Transform m_root;
-        private bool m_playAnimation;
+        private GameObject m_groundObj;
+        private GameObject m_wallObj;
         private SpanningTreeType m_spanningTreeType;
         private int m_width;
         private int m_height;
@@ -31,10 +31,11 @@ namespace ProceduralDungeon.SpanningTree
         private List<STEdge> m_edges;
         private BaseSpanningTree m_spanningTree;
 
-        public void Initialize(Transform root, bool playAnimation, SpanningTreeType spanningTreeType, int width, int height, int extraCullingCoefficient, int accumulationCoefficient, int erosionCoefficient)
+        public void Initialize(Transform root, GameObject groundObj, GameObject wallObj, SpanningTreeType spanningTreeType, int width, int height, int extraCullingCoefficient, int accumulationCoefficient, int erosionCoefficient)
         {
             m_root = root;
-            m_playAnimation = playAnimation;
+            m_groundObj = groundObj;
+            m_wallObj = wallObj;
             m_spanningTreeType = spanningTreeType;
             m_width = width;
             m_height = height;
@@ -67,7 +68,8 @@ namespace ProceduralDungeon.SpanningTree
         {
             if (m_groundAsset == null)
             {
-                m_groundAsset = GameObject.Instantiate(Resources.Load<GameObject>("Ground")).transform;
+                m_groundAsset = GameObject.Instantiate(m_groundObj).transform;
+                m_groundAsset.gameObject.SetActive(true);
                 m_groundAsset.name = "Ground";
                 m_groundAsset.SetParent(m_root);
             }
@@ -90,7 +92,7 @@ namespace ProceduralDungeon.SpanningTree
             {
                 for (int h = 0; h < m_height; h++)
                 {
-                    m_cells[w, h] = new Cell(m_cellParent, w, h, w % 2 == 1 || h % 2 == 1);
+                    m_cells[w, h] = new Cell(m_cellParent, m_wallObj, w, h, w % 2 == 1 || h % 2 == 1);
                 }
             }
         }
@@ -268,7 +270,7 @@ namespace ProceduralDungeon.SpanningTree
                     cacheH = (int)accumulationCells[i].Center.z;
 
                     m_cells[cacheW, cacheH].Destroy();
-                    m_cells[cacheW, cacheH] = new Cell(m_cellParent, cacheW, cacheH, true);
+                    m_cells[cacheW, cacheH] = new Cell(m_cellParent, m_wallObj, cacheW, cacheH, true);
                 }
 
                 value--;

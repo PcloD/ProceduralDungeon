@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace ProceduralDungeon
 {
@@ -10,6 +11,7 @@ namespace ProceduralDungeon
         public Vector3 MinBorder { get { return m_minBorder; } }
         public Vector3 MaxBorder { get { return m_maxBorder; } }
         public int Priority { get { return m_priority; } }
+        public List<Wall> ConnectedWalls { get { return m_connectedWalls; } }
 
         private Vector3 m_center;
         private Vector3 m_centerBias;
@@ -17,6 +19,7 @@ namespace ProceduralDungeon
         private Vector3 m_minBorder;
         private Vector3 m_maxBorder;
         private int m_priority;
+        private List<Wall> m_connectedWalls;
 
         public Room(Vector3 center, Vector3 size)
         {
@@ -79,6 +82,55 @@ namespace ProceduralDungeon
                 point.z >= m_center.z - m_size.z / 2 &&
                 point.z <= m_center.z + m_size.z / 2)
             {
+                return true;
+            }
+
+            return false;
+        }
+
+        public void AddConnectedWalls(Road road)
+        {
+            if(m_connectedWalls == null)
+            {
+                m_connectedWalls = new List<Wall>();
+            }
+
+            Wall cacheWall = null;
+            if (InBoundary(road.Start))
+            {
+                cacheWall = new Wall((int)road.Start.x, (int)road.Start.z, !road.IsVertical);
+                if (!m_connectedWalls.Contains(cacheWall))
+                {
+                    m_connectedWalls.Add(cacheWall);
+                }
+            }
+
+            if (InBoundary(road.End))
+            {
+                cacheWall = new Wall((int)road.End.x, (int)road.End.z, !road.IsVertical);
+                if (!m_connectedWalls.Contains(cacheWall))
+                {
+                    m_connectedWalls.Add(cacheWall);
+                }
+            }
+        }
+
+        public bool IsConnectedWall(Wall wall)
+        {
+            if(m_connectedWalls == null)
+            {
+                return false;
+            }
+
+            Wall cacheWall = null;
+            for(int i = 0; i < m_connectedWalls.Count; i++)
+            {
+                cacheWall = m_connectedWalls[i];
+                if(cacheWall.X != wall.X || cacheWall.Z != wall.Z || cacheWall.IsVertical != wall.IsVertical)
+                {
+                    continue;
+                }
+
                 return true;
             }
 

@@ -31,6 +31,7 @@ namespace ProceduralDungeon
             GenerateSpannningTree();
             GenerateRoads();
             DividedRoads();
+            UpdateConnectRoads();
             UpdateRoads();
         }
 
@@ -73,6 +74,7 @@ namespace ProceduralDungeon
             Vector3 roadCenter;
             Vector3 roadStartA;
             Vector3 roadStartB;
+            Road cacheRoad;
 
             for (int i = 0; i < m_spanningTree.Segments.Count; i++)
             {
@@ -111,7 +113,8 @@ namespace ProceduralDungeon
                         }
                     }
 
-                    m_roadList.Add(new Road(roadStartA, roadCenter));
+                    cacheRoad = new Road(roadStartA, roadCenter);
+                    m_roadList.Add(cacheRoad);
                 }
 
                 if (!cacheRoomB.InBoundary(roadCenter))
@@ -145,7 +148,8 @@ namespace ProceduralDungeon
                         }
                     }
 
-                    m_roadList.Add(new Road(roadStartB, roadCenter));
+                    cacheRoad = new Road(roadStartB, roadCenter);
+                    m_roadList.Add(cacheRoad);
                 }
             }
         }
@@ -361,6 +365,22 @@ namespace ProceduralDungeon
             }
 
             return crossedRooms;
+        }
+
+        private void UpdateConnectRoads()
+        {
+            Room cacheRoom = null;
+            Road cacheRoad = null;
+            for(int i = 0; i < m_roadList.Count; i++)
+            {
+                cacheRoad = m_roadList[i];
+
+                for(int j = 0; j < m_rooms.Length; j++)
+                {
+                    cacheRoom = m_rooms[j];
+                    cacheRoom.AddConnectedWalls(cacheRoad);
+                }
+            }
         }
 
         private void UpdateRoads()

@@ -2,8 +2,13 @@
 
 namespace ProceduralDungeon
 {
-    public class DungeonGenerator : MonoBehaviour
+    public class RoomBasedProceduralDungeon : MonoBehaviour
     {
+        [SerializeField] private GameObject m_roomGroundObj;
+        [SerializeField] private GameObject m_roomWallObj;
+        [SerializeField] private GameObject m_roadGroundObj;
+        [SerializeField] private GameObject m_roadWallObj;
+
         [SerializeField] private IntVector2 m_mapSize;
         [SerializeField] private int m_totalRoomCount;
         [SerializeField] private int m_selectRoomCount;
@@ -12,27 +17,41 @@ namespace ProceduralDungeon
 
         [SerializeField] private bool m_drawMap;
         [SerializeField] private bool m_drawRoom;
-        [SerializeField] private bool m_drawMainRoom;
-        [SerializeField] private bool m_drawMainRoomCenterBias;
+        [SerializeField] private bool m_drawSelectRoom;
+        [SerializeField] private bool m_drawSelectRoomCenterBias;
         [SerializeField] private bool m_drawDelaunayTriangulation;
         [SerializeField] private bool m_drawSpanningTree;
         [SerializeField] private bool m_drawRoads;
 
         private RoomGenerator m_roomGenerator;
         private RoadGenerator m_roadGenerator;
+        private RoomObjectGenerator m_roomObjectGenerator;
+        private RoadObjectGenerator m_roadObjectGenerator;
 
         [InspectorMethod]
         private void Generate()
         {
+            if(m_roomObjectGenerator != null)
+            {
+                m_roomObjectGenerator.Destroy();
+            }
+
+            if (m_roadObjectGenerator != null)
+            {
+                m_roadObjectGenerator.Destroy();
+            }
+
             m_roomGenerator = new RoomGenerator(m_mapSize, m_totalRoomCount, m_selectRoomCount, m_minRoomSize, m_maxRoomSize);
             m_roadGenerator = new RoadGenerator(m_mapSize, m_roomGenerator.Rooms);
+            m_roomObjectGenerator = new RoomObjectGenerator(m_roomGenerator.SelectRooms, m_roomGroundObj, m_roomWallObj);
+            m_roadObjectGenerator = new RoadObjectGenerator(m_roadGenerator.Roads, m_roadGroundObj, m_roadWallObj);
         }
 
         private void OnDrawGizmos()
         {
             DrawMap();
             DrawRoom();
-            DrawMainRoom();
+            DrawSelectRoom();
             DrawDelaunayTriangulation();
             DrawSpanningTree();
             DrawRoads();
@@ -94,10 +113,10 @@ namespace ProceduralDungeon
                     continue;
                 }
 
-                leftUp = cacheRoom.Center + new Vector3(-cacheRoom.Size.x / 2, 0, cacheRoom.Size.z / 2);
-                rightUp = cacheRoom.Center + new Vector3(cacheRoom.Size.x / 2, 0, cacheRoom.Size.z / 2);
-                leftBottom = cacheRoom.Center + new Vector3(-cacheRoom.Size.x / 2, 0, -cacheRoom.Size.z / 2);
-                rightBottom = cacheRoom.Center + new Vector3(cacheRoom.Size.x / 2, 0, -cacheRoom.Size.z / 2);
+                leftUp = new Vector3(cacheRoom.MinBorder.x, cacheRoom.MaxBorder.z);
+                rightUp = new Vector3(cacheRoom.MaxBorder.x, cacheRoom.MaxBorder.z);
+                leftBottom = new Vector3(cacheRoom.MinBorder.x, cacheRoom.MinBorder.z);
+                rightBottom = new Vector3(cacheRoom.MaxBorder.x, cacheRoom.MaxBorder.z);
 
                 Gizmos.DrawSphere(cacheRoom.Center, 0.1f);
                 Gizmos.DrawLine(leftUp, rightUp);
@@ -107,9 +126,9 @@ namespace ProceduralDungeon
             }
         }
 
-        private void DrawMainRoom()
+        private void DrawSelectRoom()
         {
-            if (!m_drawMainRoom)
+            if (!m_drawSelectRoom)
             {
                 return;
             }
@@ -142,7 +161,7 @@ namespace ProceduralDungeon
                 Gizmos.DrawLine(leftBottom, leftUp);
             }
 
-            if (m_drawMainRoomCenterBias)
+            if (m_drawSelectRoomCenterBias)
             {
                 Gizmos.color = Color.red;
                 for (int i = 0; i < m_roomGenerator.SelectRooms.Length; i++)
