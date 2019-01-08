@@ -378,7 +378,7 @@ namespace ProceduralDungeon
                 for(int j = 0; j < m_rooms.Length; j++)
                 {
                     cacheRoom = m_rooms[j];
-                    cacheRoom.AddConnectedWalls(cacheRoad);
+                    cacheRoom.AddConnectedRoad(cacheRoad);
                 }
             }
         }

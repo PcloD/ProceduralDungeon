@@ -5,18 +5,21 @@ namespace ProceduralDungeon
 {
     public class RoomObjectGenerator
     {
+        public Transform Parent { get { return m_parent; } }
+        public List<Wall> WallList { get { return m_wallList; } }
+
         private Room[] m_rooms;
-        private GameObject m_groundObj;
-        private GameObject m_wallObj;
+        private GameObject[] m_groundObjs;
+        private GameObject[] m_wallObjs;
         private Transform m_parent;
         private List<Ground> m_groundList;
         private List<Wall> m_wallList;
 
-        public RoomObjectGenerator(Room[] rooms, GameObject groundObj, GameObject wallObj)
+        public RoomObjectGenerator(Room[] rooms, GameObject[] groundObjs, GameObject[] wallObjs)
         {
             m_rooms = rooms;
-            m_groundObj = groundObj;
-            m_wallObj = wallObj;
+            m_groundObjs = groundObjs;
+            m_wallObjs = wallObjs;
 
             Generate();
         }
@@ -104,13 +107,13 @@ namespace ProceduralDungeon
                 for(int x = minBorderX; x < maxBorderX; x++)
                 {
                     cacheWall = new Wall(x, minBorderZ, false);
-                    if(!cacheRoom.IsConnectedWall(cacheWall))
+                    if(!cacheRoom.IsCullingWall(cacheWall))
                     {
                         m_wallList.Add(cacheWall);
                     }
 
                     cacheWall = new Wall(x, maxBorderZ, false);
-                    if (!cacheRoom.IsConnectedWall(cacheWall))
+                    if (!cacheRoom.IsCullingWall(cacheWall))
                     {
                         m_wallList.Add(cacheWall);
                     }
@@ -119,13 +122,13 @@ namespace ProceduralDungeon
                 for (int z = minBorderZ; z < maxBorderZ; z++)
                 {
                     cacheWall = new Wall(minBorderX, z, true);
-                    if (!cacheRoom.IsConnectedWall(cacheWall))
+                    if (!cacheRoom.IsCullingWall(cacheWall))
                     {
                         m_wallList.Add(cacheWall);
                     }
 
                     cacheWall = new Wall(maxBorderX, z, true);
-                    if (!cacheRoom.IsConnectedWall(cacheWall))
+                    if (!cacheRoom.IsCullingWall(cacheWall))
                     {
                         m_wallList.Add(cacheWall);
                     }
@@ -141,11 +144,11 @@ namespace ProceduralDungeon
             {
                 cacheGround = m_groundList[i];
 
-                cacheObj = GameObject.Instantiate(m_groundObj);
+                cacheObj = GameObject.Instantiate(m_groundObjs[Random.Range(0, m_groundObjs.Length)]);
                 cacheObj.name = string.Format("Ground ({0}, {1})", cacheGround.X, cacheGround.Z);
                 cacheObj.SetActive(true);
                 cacheObj.transform.position = new Vector3(cacheGround.X + 0.5f, 0, cacheGround.Z + 0.5f);
-                cacheObj.transform.localScale = new Vector3(1, 0.05f, 1);
+                cacheObj.transform.localScale = Vector3.one;
                 cacheObj.transform.SetParent(m_parent.transform);
             }
         }
@@ -158,11 +161,12 @@ namespace ProceduralDungeon
             {
                 cacheWall = m_wallList[i];
 
-                cacheObj = GameObject.Instantiate(m_wallObj);
+                cacheObj = GameObject.Instantiate(m_wallObjs[Random.Range(0, m_wallObjs.Length)]);
                 cacheObj.name = string.Format("Wall ({0}, {1})", cacheWall.X, cacheWall.Z);
                 cacheObj.SetActive(true);
                 cacheObj.transform.position = new Vector3(cacheWall.IsVertical ? cacheWall.X : cacheWall.X + 0.5f, 0f, cacheWall.IsVertical ? cacheWall.Z + 0.5f : cacheWall.Z);
-                cacheObj.transform.localScale = new Vector3(cacheWall.IsVertical ? 0.05f : 1f, 1f, cacheWall.IsVertical ? 1f : 0.05f);
+                cacheObj.transform.localScale = Vector3.one;
+                cacheObj.transform.localEulerAngles = new Vector3(0, cacheWall.IsVertical ? 90 : 0, 0);
                 cacheObj.transform.SetParent(m_parent.transform);
             }
         }

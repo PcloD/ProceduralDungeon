@@ -11,7 +11,6 @@ namespace ProceduralDungeon
         public Vector3 MinBorder { get { return m_minBorder; } }
         public Vector3 MaxBorder { get { return m_maxBorder; } }
         public int Priority { get { return m_priority; } }
-        public List<Wall> ConnectedWalls { get { return m_connectedWalls; } }
 
         private Vector3 m_center;
         private Vector3 m_centerBias;
@@ -19,7 +18,8 @@ namespace ProceduralDungeon
         private Vector3 m_minBorder;
         private Vector3 m_maxBorder;
         private int m_priority;
-        private List<Wall> m_connectedWalls;
+        private List<Wall> m_cullingWalls;
+        private List<Vector3> m_cornerPositions;
 
         public Room(Vector3 center, Vector3 size)
         {
@@ -29,6 +29,7 @@ namespace ProceduralDungeon
             m_priority = (int)(m_size.x * m_size.z);
 
             UpdateBorder(center, size);
+            UpdateCorners();
         }
 
         private Vector3 GetCenterBias(Vector3 center)
@@ -75,6 +76,19 @@ namespace ProceduralDungeon
             m_maxBorder.z = center.z + size.z / 2;
         }
 
+        private void UpdateCorners()
+        {
+            if(m_cornerPositions == null)
+            {
+                m_cornerPositions = new List<Vector3>();
+            }
+
+            m_cornerPositions.Add(new Vector3(m_minBorder.x, 0, m_minBorder.z));
+            m_cornerPositions.Add(new Vector3(m_maxBorder.x, 0, m_minBorder.z));
+            m_cornerPositions.Add(new Vector3(m_minBorder.x, 0, m_maxBorder.z));
+            m_cornerPositions.Add(new Vector3(m_maxBorder.x, 0, m_maxBorder.z));
+        }
+
         public bool InBoundary(Vector3 point)
         {
             if (point.x >= m_center.x - m_size.x / 2 &&
@@ -88,44 +102,44 @@ namespace ProceduralDungeon
             return false;
         }
 
-        public void AddConnectedWalls(Road road)
+        public void AddConnectedRoad(Road road)
         {
-            if(m_connectedWalls == null)
+            if(m_cullingWalls == null)
             {
-                m_connectedWalls = new List<Wall>();
+                m_cullingWalls = new List<Wall>();
             }
 
             Wall cacheWall = null;
             if (InBoundary(road.Start))
             {
                 cacheWall = new Wall((int)road.Start.x, (int)road.Start.z, !road.IsVertical);
-                if (!m_connectedWalls.Contains(cacheWall))
+                if (!m_cullingWalls.Contains(cacheWall))
                 {
-                    m_connectedWalls.Add(cacheWall);
+                    m_cullingWalls.Add(cacheWall);
                 }
             }
-
-            if (InBoundary(road.End))
+            
+            if(InBoundary(road.End))
             {
                 cacheWall = new Wall((int)road.End.x, (int)road.End.z, !road.IsVertical);
-                if (!m_connectedWalls.Contains(cacheWall))
+                if (!m_cullingWalls.Contains(cacheWall))
                 {
-                    m_connectedWalls.Add(cacheWall);
+                    m_cullingWalls.Add(cacheWall);
                 }
             }
         }
 
-        public bool IsConnectedWall(Wall wall)
+        public bool IsCullingWall(Wall wall)
         {
-            if(m_connectedWalls == null)
+            if(m_cullingWalls == null)
             {
                 return false;
             }
 
             Wall cacheWall = null;
-            for(int i = 0; i < m_connectedWalls.Count; i++)
+            for(int i = 0; i < m_cullingWalls.Count; i++)
             {
-                cacheWall = m_connectedWalls[i];
+                cacheWall = m_cullingWalls[i];
                 if(cacheWall.X != wall.X || cacheWall.Z != wall.Z || cacheWall.IsVertical != wall.IsVertical)
                 {
                     continue;
