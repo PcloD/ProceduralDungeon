@@ -11,26 +11,26 @@ namespace BinarySpacePartitioning
         public IntRect Rect { get { return m_rect; } }
         public IntRect RoomRect { get { return m_roomRect; } }
         public IntRect ValidRect { get { return m_validRect; } }
-        public IntRect CorridorRect { get { return m_corridorRect; } }
+        public Corridor Corridor { get { return m_corridor; } }
 
         private int m_level;
         private IntRect m_rect;
         private BSPNode m_parentNode;
-        private IntVector2 m_minNodeSize;
+        private IntVector2 m_minBSPSize;
         private Vector2 m_minRoomSizeRatio;
 
         private int m_splitDice; //0: Vertical Split, 1: Horizontal Split
         private List<BSPNode> m_leafNodes;
         private IntRect m_roomRect;
         private IntRect m_validRect;
-        private IntRect m_corridorRect;
+        private Corridor m_corridor;
 
-        public BSPNode(int level, IntRect rect, BSPNode parentNode, IntVector2 minNodeSize, Vector2 minRoomSizeRatio)
+        public BSPNode(int level, IntRect rect, BSPNode parentNode, IntVector2 minBSPSize, Vector2 minRoomSizeRatio)
         {
             m_level = level;
             m_rect = rect;
             m_parentNode = parentNode;
-            m_minNodeSize = minNodeSize;
+            m_minBSPSize = minBSPSize;
             m_minRoomSizeRatio = minRoomSizeRatio;
             m_leafNodes = new List<BSPNode>();
         }
@@ -55,13 +55,13 @@ namespace BinarySpacePartitioning
             }
 
             IntRect[] splitRects = GetSplitRects();
-            m_leafNodes.Add(new BSPNode(m_level + 1, splitRects[0], this, m_minNodeSize, m_minRoomSizeRatio));
-            m_leafNodes.Add(new BSPNode(m_level + 1, splitRects[1], this, m_minNodeSize, m_minRoomSizeRatio));
+            m_leafNodes.Add(new BSPNode(m_level + 1, splitRects[0], this, m_minBSPSize, m_minRoomSizeRatio));
+            m_leafNodes.Add(new BSPNode(m_level + 1, splitRects[1], this, m_minBSPSize, m_minRoomSizeRatio));
         }
 
         private bool CanVerticalSplit()
         {
-            if(m_rect.width < m_minNodeSize.x * 2)
+            if(m_rect.width < m_minBSPSize.x * 2)
             {
                 return false;
             }
@@ -76,7 +76,7 @@ namespace BinarySpacePartitioning
 
         private bool CanHorizontalSplit()
         {
-            if (m_rect.height < m_minNodeSize.z * 2)
+            if (m_rect.height < m_minBSPSize.z * 2)
             {
                 return false;
             }
@@ -109,7 +109,7 @@ namespace BinarySpacePartitioning
             if (m_splitDice == 0)
             {
                 int randomWidth = (int)Random.Range(m_rect.width * 0.3f, m_rect.width * 0.7f);
-                if(randomWidth < m_minNodeSize.x || m_rect.width - randomWidth < m_minNodeSize.x)
+                if(randomWidth < m_minBSPSize.x || m_rect.width - randomWidth < m_minBSPSize.x)
                 {
                     return GetSplitRects();
                 }
@@ -120,7 +120,7 @@ namespace BinarySpacePartitioning
             else
             {
                 int randomHeight = (int)Random.Range(m_rect.height * 0.3f, m_rect.height * 0.7f);
-                if (randomHeight < m_minNodeSize.z || m_rect.height - randomHeight < m_minNodeSize.z)
+                if (randomHeight < m_minBSPSize.z || m_rect.height - randomHeight < m_minBSPSize.z)
                 {
                     return GetSplitRects();
                 }
@@ -174,12 +174,12 @@ namespace BinarySpacePartitioning
         {
             if(!IsLeaf())
             {
-                m_corridorRect = GetRandomCorridorRect();
+                m_corridor = GetRandomCorridor();
                 m_validRect = GetValidRect();
             }
         }
 
-        private IntRect GetRandomCorridorRect()
+        private Corridor GetRandomCorridor()
         {
             int randomValue = GetRandomCorridorRange();
             IntRect corridorRect;
@@ -234,7 +234,7 @@ namespace BinarySpacePartitioning
                 corridorRect = new IntRect(randomValue, minRect.y + minRect.height, 1, maxRect.y - minRect.y - minRect.height);
             }
 
-            return corridorRect;
+            return new Corridor(corridorRect, m_splitDice != 0);
         }
 
         private int GetRandomCorridorRange()
@@ -347,9 +347,9 @@ namespace BinarySpacePartitioning
                 rects.Add(m_roomRect);
             }
 
-            if (m_corridorRect.InBoundaryY(y))
+            if (m_corridor != null && m_corridor.Rect.InBoundaryY(y))
             {
-                rects.Add(m_corridorRect);
+                rects.Add(m_corridor.Rect);
             }
 
             for (int i = 0; i < m_leafNodes.Count; i++)
@@ -398,9 +398,9 @@ namespace BinarySpacePartitioning
                 rects.Add(m_roomRect);
             }
 
-            if (m_corridorRect.InBoundaryX(x))
+            if (m_corridor != null && m_corridor.Rect.InBoundaryX(x))
             {
-                rects.Add(m_corridorRect);
+                rects.Add(m_corridor.Rect);
             }
 
             for (int i = 0; i < m_leafNodes.Count; i++)

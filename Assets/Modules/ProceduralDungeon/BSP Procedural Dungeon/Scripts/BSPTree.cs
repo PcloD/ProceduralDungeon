@@ -8,9 +8,9 @@ namespace BinarySpacePartitioning
     {
         private BSPNode m_rootNode;
 
-        public BSPTree(IntVector2 mapSize, IntVector2 minNodeSize, Vector2 minRoomSizeRatio)
+        public BSPTree(IntVector2 mapSize, IntVector2 minBSPSize, Vector2 minRoomSizeRatio)
         {
-            m_rootNode = new BSPNode(0, new IntRect(0, 0, mapSize.x, mapSize.z), null, minNodeSize, minRoomSizeRatio);
+            m_rootNode = new BSPNode(0, new IntRect(0, 0, mapSize.x, mapSize.z), null, minBSPSize, minRoomSizeRatio);
         }
 
         public void Split()

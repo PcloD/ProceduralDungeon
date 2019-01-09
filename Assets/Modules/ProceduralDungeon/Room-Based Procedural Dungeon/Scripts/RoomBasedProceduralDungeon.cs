@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ProceduralDungeon
 {
-    public class RoomBasedProceduralDungeon : MonoBehaviour
+    public class RoomBasedProceduralDungeon : BaseProceduralDungeon
     {
         [SerializeField] private GameObject[] m_roomGroundObjs;
         [SerializeField] private GameObject[] m_roomWallObjs;
@@ -33,31 +33,7 @@ namespace ProceduralDungeon
         private RoadObjectGenerator m_roadObjectGenerator;
         private PillarObjectGenerator m_pillarObjectGenerator;
 
-        [InspectorMethod]
-        public void Generate()
-        {
-            Destroy();
-
-            m_roomGenerator = new RoomGenerator(m_mapSize, m_totalRoomCount, m_selectRoomCount, m_minRoomSize, m_maxRoomSize);
-            m_roadGenerator = new RoadGenerator(m_mapSize, m_roomGenerator.SelectRooms);
-
-            if(m_generateObjects)
-            {
-                m_roomObjectGenerator = new RoomObjectGenerator(m_roomGenerator.SelectRooms, m_roomGroundObjs, m_roomWallObjs);
-                m_roomObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
-
-                m_roadObjectGenerator = new RoadObjectGenerator(m_roadGenerator.Roads, m_roadGroundObjs, m_roadWallObjs);
-                m_roadObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
-
-                List<Wall> walls = new List<Wall>();
-                walls.AddRange(m_roomObjectGenerator.WallList);
-                walls.AddRange(m_roadObjectGenerator.WallList);
-                m_pillarObjectGenerator = new PillarObjectGenerator(m_mapSize, walls.ToArray(), m_pillarObjs);
-                m_pillarObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
-            }
-        }
-
-        private void Destroy()
+        protected override void Destroy()
         {
             if (m_roomObjectGenerator != null)
             {
@@ -75,7 +51,32 @@ namespace ProceduralDungeon
             }
         }
 
-        public Vector3 GetRandomRoomPosition()
+        protected override void StartGenerate()
+        {
+            Destroy();
+
+            m_roomGenerator = new RoomGenerator(m_mapSize, m_totalRoomCount, m_selectRoomCount, m_minRoomSize, m_maxRoomSize);
+            m_roadGenerator = new RoadGenerator(m_mapSize, m_roomGenerator.SelectRooms);
+
+            if(m_generateObjects)
+            {
+                ProceduralDungeonConnectHelper helper = new ProceduralDungeonConnectHelper(m_roomGenerator.SelectRooms, m_roadGenerator.Roads);
+
+                m_roomObjectGenerator = new RoomObjectGenerator(helper.Rooms, m_roomGroundObjs, m_roomWallObjs);
+                m_roomObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
+
+                m_roadObjectGenerator = new RoadObjectGenerator(helper.Roads, m_roadGroundObjs, m_roadWallObjs);
+                m_roadObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
+
+                List<Wall> walls = new List<Wall>();
+                walls.AddRange(m_roomObjectGenerator.WallList);
+                walls.AddRange(m_roadObjectGenerator.WallList);
+                m_pillarObjectGenerator = new PillarObjectGenerator(m_mapSize, walls.ToArray(), m_pillarObjs);
+                m_pillarObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
+            }
+        }
+
+        public override Vector3 GetRandomPosition()
         {
             return GetRandomRoom().Center * m_gridSize;
         }
@@ -83,11 +84,6 @@ namespace ProceduralDungeon
         private Room GetRandomRoom()
         {
             return m_roomGenerator.SelectRooms[Random.Range(0, m_roomGenerator.SelectRooms.Length)];
-        }
-
-        private void OnDestroy()
-        {
-            Destroy();
         }
 
         private void OnDrawGizmos()

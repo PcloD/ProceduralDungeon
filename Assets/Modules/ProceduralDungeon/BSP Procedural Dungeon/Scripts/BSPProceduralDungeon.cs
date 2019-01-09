@@ -4,12 +4,21 @@ using System.Collections.Generic;
 
 namespace ProceduralDungeon
 {
-    public class BSPProceduralDungeon : MonoBehaviour
+    public class BSPProceduralDungeon : BaseProceduralDungeon
     {
+        [Header("Objects")]
+        [SerializeField] private GameObject[] m_roomGroundObjs;
+        [SerializeField] private GameObject[] m_roomWallObjs;
+        [SerializeField] private GameObject[] m_roadGroundObjs;
+        [SerializeField] private GameObject[] m_roadWallObjs;
+        [SerializeField] private GameObject[] m_pillarObjs;
+
+        [Header("Settings")]
         [SerializeField] private IntVector2 m_mapSize = new IntVector2(10, 10);
         [SerializeField] private int m_splitIteration = 1;
-        [SerializeField] private IntVector2 m_minNodeSize = new IntVector2(3, 3);
+        [SerializeField] private IntVector2 m_minBSPSize = new IntVector2(3, 3);
         [SerializeField] private Vector2 m_minRoomSizeRatio = new Vector2(0.45f, 0.45f);
+        [SerializeField] private bool m_generateObjects;
 
         [Header("Gizmos")]
         [SerializeField] private bool m_drawGrid;
@@ -18,91 +27,48 @@ namespace ProceduralDungeon
         [SerializeField] private bool m_drawCorridor;
 
         private BSPTree m_tree;
-        private int m_currentInteration;
         private List<BSPNode> m_leafNodes;
         private List<BSPNode> m_parentNodes;
 
-        private void Update()
+        private RoomObjectGenerator m_roomObjectGenerator;
+        private RoadObjectGenerator m_roadObjectGenerator;
+        private PillarObjectGenerator m_pillarObjectGenerator;
+
+        protected override void Destroy()
         {
-            if(Input.GetKey(KeyCode.Space))
+            if (m_roomObjectGenerator != null)
             {
-                Generate();
+                m_roomObjectGenerator.Destroy();
+            }
+
+            if (m_roadObjectGenerator != null)
+            {
+                m_roadObjectGenerator.Destroy();
+            }
+
+            if (m_pillarObjectGenerator != null)
+            {
+                m_pillarObjectGenerator.Destroy();
             }
         }
 
-        [InspectorMethod]
-        public void Generate()
+        protected override void StartGenerate()
         {
-            Initialize();
+            m_tree = new BSPTree(m_mapSize, m_minBSPSize, m_minRoomSizeRatio);
 
             for (int i = 0; i < m_splitIteration; i++)
             {
-                Split();
+                m_tree.Split();
             }
 
-            GenerateRoom();
-            GenerateCorridor();
-        }
-
-        [InspectorMethod]
-        private void Initialize()
-        {
-            m_tree = new BSPTree(m_mapSize, m_minNodeSize, m_minRoomSizeRatio);
-            m_currentInteration = 0;
             m_leafNodes = m_tree.GetAllLeafNodes();
-
-            if(m_parentNodes != null)
-            {
-                m_parentNodes.Clear();
-            }
-        }
-
-        [InspectorMethod]
-        private void Split()
-        {
-            if(m_tree == null)
-            {
-                return;
-            }
-
-            m_currentInteration++;
-            m_tree.Split();
-            m_leafNodes = m_tree.GetAllLeafNodes();
-            if (m_parentNodes != null)
-            {
-                m_parentNodes.Clear();
-            }
-        }
-
-        [InspectorMethod]
-        private void GenerateRoom()
-        {
-            if(m_leafNodes == null || m_leafNodes.Count == 0)
-            {
-                return;
-            }
-
             for (int i = 0; i < m_leafNodes.Count; i++)
             {
                 m_leafNodes[i].GenerateRoomRect();
             }
 
-            if (m_parentNodes != null)
-            {
-                m_parentNodes.Clear();
-            }
-        }
-
-        [InspectorMethod]
-        private void GenerateCorridor()
-        {
-            if (m_leafNodes == null || m_leafNodes.Count == 0)
-            {
-                return;
-            }
-
             List<BSPNode> levelNodes = null;
-            for (int i = m_currentInteration; i >= 0; i--)
+            for (int i = m_splitIteration; i >= 0; i--)
             {
                 levelNodes = m_tree.GetNodesByLevel(i);
                 for (int j = 0; j < levelNodes.Count; j++)
@@ -112,6 +78,46 @@ namespace ProceduralDungeon
             }
 
             m_parentNodes = m_tree.GetAllParentNodes();
+
+            if(m_generateObjects)
+            {
+                List<Room> rooms = new List<Room>();
+                for(int i = 0; i < m_leafNodes.Count; i++)
+                {
+                    rooms.Add(new Room(m_leafNodes[i].RoomRect));
+                }
+
+                List<Road> roads = new List<Road>();
+                for (int i = 0; i < m_parentNodes.Count; i++)
+                {
+                    if (m_parentNodes[i].Corridor == null)
+                    {
+                        continue;
+                    }
+
+                    roads.Add(new Road(m_parentNodes[i].Corridor));
+                }
+
+                ProceduralDungeonConnectHelper helper = new ProceduralDungeonConnectHelper(rooms.ToArray(), roads.ToArray());
+                m_roomObjectGenerator = new RoomObjectGenerator(helper.Rooms, m_roomGroundObjs, m_roomWallObjs);
+                //m_roadObjectGenerator = new RoadObjectGenerator(roads.ToArray(), m_roadGroundObjs, m_roadWallObjs);
+
+                //List<Wall> walls = new List<Wall>();
+                //walls.AddRange(m_roomObjectGenerator.WallList);
+                //walls.AddRange(m_roadObjectGenerator.WallList);
+                //m_pillarObjectGenerator = new PillarObjectGenerator(m_mapSize, walls.ToArray(), m_pillarObjs);
+            }
+        }
+
+        public override Vector3 GetRandomPosition()
+        {
+            IntRect roomRect = GetRandomNode().RoomRect;
+            return new Vector3(roomRect.center.x, 0, roomRect.center.y);
+        }
+
+        private BSPNode GetRandomNode()
+        {
+            return m_leafNodes[Random.Range(0, m_leafNodes.Count)];
         }
 
         private void OnDrawGizmos()
@@ -203,7 +209,12 @@ namespace ProceduralDungeon
             Gizmos.color = Color.red;
             for (int i = 0; i < m_parentNodes.Count; i++)
             {
-                DrawRect(m_parentNodes[i].CorridorRect);
+                if(m_parentNodes[i].Corridor == null)
+                {
+                    continue;
+                }
+
+                DrawRect(m_parentNodes[i].Corridor.Rect);
             }
         }
 

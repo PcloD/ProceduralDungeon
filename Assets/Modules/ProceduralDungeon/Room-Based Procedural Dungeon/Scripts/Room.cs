@@ -21,59 +21,68 @@ namespace ProceduralDungeon
         private List<Wall> m_cullingWalls;
         private List<Vector3> m_cornerPositions;
 
-        public Room(Vector3 center, Vector3 size)
+        public Room(IntRect rect)
         {
-            m_center = center;
-            m_centerBias = GetCenterBias(center);
-            m_size = size;
+            m_center = new Vector3(rect.center.x, 0, rect.center.y);
+            m_size = new Vector3(rect.width, 0, rect.height);
             m_priority = (int)(m_size.x * m_size.z);
 
-            UpdateBorder(center, size);
+            UpdateCenterBias();
+            UpdateBorder();
             UpdateCorners();
         }
 
-        private Vector3 GetCenterBias(Vector3 center)
+        public Room(Vector3 center, Vector3 size)
         {
-            Vector3 bias = Vector3.zero;
+            m_center = center;
+            m_size = size;
+            m_priority = (int)(m_size.x * m_size.z);
+
+            UpdateCenterBias();
+            UpdateBorder();
+            UpdateCorners();
+        }
+
+        private void UpdateCenterBias()
+        {
+            m_centerBias = Vector3.zero;
             int random = 0;
-            if (center.x == (int)center.x)
+            if (m_center.x == (int)m_center.x)
             {
                 random = Random.Range(0, 2);
                 if(random == 0)
                 {
-                    bias.x = 0.5f;
+                    m_centerBias.x = 0.5f;
                 }
                 else
                 {
-                    bias.x = -0.5f;
+                    m_centerBias.x = -0.5f;
                 }
             }
 
-            if (center.z == (int)center.z)
+            if (m_center.z == (int)m_center.z)
             {
                 random = Random.Range(0, 2);
                 if (random == 0)
                 {
-                    bias.z = 0.5f;
+                    m_centerBias.z = 0.5f;
                 }
                 else
                 {
-                    bias.z = -0.5f;
+                    m_centerBias.z = -0.5f;
                 }
             }
-
-            return bias;
         }
 
-        private void UpdateBorder(Vector3 center, Vector3 size)
+        private void UpdateBorder()
         {
             m_minBorder = Vector3.zero;
             m_maxBorder = Vector3.zero;
 
-            m_minBorder.x = center.x - size.x / 2;
-            m_maxBorder.x = center.x + size.x / 2;
-            m_minBorder.z = center.z - size.z / 2;
-            m_maxBorder.z = center.z + size.z / 2;
+            m_minBorder.x = m_center.x - m_size.x / 2;
+            m_maxBorder.x = m_center.x + m_size.x / 2;
+            m_minBorder.z = m_center.z - m_size.z / 2;
+            m_maxBorder.z = m_center.z + m_size.z / 2;
         }
 
         private void UpdateCorners()

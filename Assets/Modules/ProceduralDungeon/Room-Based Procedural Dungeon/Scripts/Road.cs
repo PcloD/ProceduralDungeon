@@ -16,12 +16,37 @@ namespace ProceduralDungeon
         private float m_minBorder;
         private float m_maxBorder;
 
+        public Road(Corridor corridor)
+        {
+            m_isVertical = corridor.IsVertical;
+            m_start = new Vector3(corridor.Rect.x, 0, corridor.Rect.y);
+            m_end = new Vector3(corridor.Rect.x + corridor.Rect.width, corridor.Rect.y + corridor.Rect.height);
+
+            if(m_isVertical)
+            {
+                m_start.x += 0.5f;
+                m_end.x += 0.5f;
+            }
+            else
+            {
+                m_start.z += 0.5f;
+                m_end.z += 0.5f;
+            }
+
+            UpdateBorders();
+        }
+
         public Road(Vector3 start, Vector3 end)
         {
             m_start = start;
             m_end = end;
-
             m_isVertical = m_start.x == m_end.x;
+
+            UpdateBorders();
+        }
+
+        private void UpdateBorders()
+        {
             if (m_isVertical)
             {
                 m_minBorder = m_start.z;

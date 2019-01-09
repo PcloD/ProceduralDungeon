@@ -31,7 +31,6 @@ namespace ProceduralDungeon
             GenerateSpannningTree();
             GenerateRoads();
             DividedRoads();
-            UpdateConnectRoads();
             UpdateRoads();
         }
 
@@ -365,22 +364,6 @@ namespace ProceduralDungeon
             }
 
             return crossedRooms;
-        }
-
-        private void UpdateConnectRoads()
-        {
-            Room cacheRoom = null;
-            Road cacheRoad = null;
-            for(int i = 0; i < m_roadList.Count; i++)
-            {
-                cacheRoad = m_roadList[i];
-
-                for(int j = 0; j < m_rooms.Length; j++)
-                {
-                    cacheRoom = m_rooms[j];
-                    cacheRoom.AddConnectedRoad(cacheRoad);
-                }
-            }
         }
 
         private void UpdateRoads()
