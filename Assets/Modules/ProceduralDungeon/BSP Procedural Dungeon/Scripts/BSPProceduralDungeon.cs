@@ -12,9 +12,7 @@ namespace ProceduralDungeon
         [SerializeField] private GameObject[] m_roadGroundObjs;
         [SerializeField] private GameObject[] m_roadWallObjs;
         [SerializeField] private GameObject[] m_pillarObjs;
-        [SerializeField] private bool m_generateRoomObjs;
-        [SerializeField] private bool m_generateRoadObjs;
-        [SerializeField] private bool m_generatePillarObjs;
+        [SerializeField] private bool m_generateObjs;
 
         [Header("Settings")]
         [SerializeField] private IntVector2 m_mapSize = new IntVector2(10, 10);
@@ -33,9 +31,7 @@ namespace ProceduralDungeon
         private List<BSPNode> m_parentNodes;
 
         private RoomObjectGenerator m_roomObjectGenerator;
-        private Room[] m_rooms;
         private RoadObjectGenerator m_roadObjectGenerator;
-        private Road[] m_roads;
         private PillarObjectGenerator m_pillarObjectGenerator;
 
         protected override void Destroy()
@@ -83,42 +79,29 @@ namespace ProceduralDungeon
 
             m_parentNodes = m_tree.GetAllParentNodes();
 
-            List<Room> rooms = new List<Room>();
-            for (int i = 0; i < m_leafNodes.Count; i++)
+            if(m_generateObjs)
             {
-                rooms.Add(new Room(m_leafNodes[i].RoomRect));
-            }
-            m_rooms = rooms.ToArray();
-
-            List<Road> roads = new List<Road>();
-            for (int i = 0; i < m_parentNodes.Count; i++)
-            {
-                if (m_parentNodes[i].Corridor == null)
+                List<Room> rooms = new List<Room>();
+                for (int i = 0; i < m_leafNodes.Count; i++)
                 {
-                    continue;
+                    rooms.Add(new Room(m_leafNodes[i].RoomRect));
                 }
 
-                roads.Add(new Road(m_parentNodes[i].Corridor));
-            }
-            m_roads = roads.ToArray();
+                List<Road> roads = new List<Road>();
+                for (int i = 0; i < m_parentNodes.Count; i++)
+                {
+                    if (m_parentNodes[i].Corridor == null)
+                    {
+                        continue;
+                    }
 
-            ProceduralDungeonConnectHelper helper = new ProceduralDungeonConnectHelper(m_rooms, m_roads);
+                    roads.Add(new Road(m_parentNodes[i].Corridor));
+                }
 
-            if (m_generateRoomObjs)
-            {
+                ConnectedCorridorService service = new ConnectedCorridorService(rooms.ToArray(), roads.ToArray());
+                m_roomObjectGenerator = new RoomObjectGenerator(service.Rooms, m_roomGroundObjs, m_roomWallObjs);
+                m_roadObjectGenerator = new RoadObjectGenerator(service.Roads, m_roadGroundObjs, m_roadWallObjs);
 
-                m_roomObjectGenerator = new RoomObjectGenerator(helper.Rooms, m_roomGroundObjs, m_roomWallObjs);
-            }
-
-            if(m_generateRoadObjs)
-            {
-
-
-                m_roadObjectGenerator = new RoadObjectGenerator(helper.Roads, m_roadGroundObjs, m_roadWallObjs);
-            }
-
-            if(m_generatePillarObjs)
-            {
                 List<Wall> walls = new List<Wall>();
                 walls.AddRange(m_roomObjectGenerator.WallList);
                 walls.AddRange(m_roadObjectGenerator.WallList);

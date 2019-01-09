@@ -60,12 +60,12 @@ namespace ProceduralDungeon
 
             if(m_generateObjects)
             {
-                ProceduralDungeonConnectHelper helper = new ProceduralDungeonConnectHelper(m_roomGenerator.SelectRooms, m_roadGenerator.Roads);
+                ConnectedCorridorService service = new ConnectedCorridorService(m_roomGenerator.SelectRooms, m_roadGenerator.Roads);
 
-                m_roomObjectGenerator = new RoomObjectGenerator(helper.Rooms, m_roomGroundObjs, m_roomWallObjs);
+                m_roomObjectGenerator = new RoomObjectGenerator(service.Rooms, m_roomGroundObjs, m_roomWallObjs);
                 m_roomObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
 
-                m_roadObjectGenerator = new RoadObjectGenerator(helper.Roads, m_roadGroundObjs, m_roadWallObjs);
+                m_roadObjectGenerator = new RoadObjectGenerator(service.Roads, m_roadGroundObjs, m_roadWallObjs);
                 m_roadObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
 
                 List<Wall> walls = new List<Wall>();

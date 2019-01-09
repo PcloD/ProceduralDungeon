@@ -1,12 +1,12 @@
 ﻿
 namespace ProceduralDungeon
 {
-    public class ProceduralDungeonConnectHelper
+    public class ConnectedCorridorService
     {
         public Room[] Rooms;
         public Road[] Roads;
 
-        public ProceduralDungeonConnectHelper(Room[] rooms, Road[] roads)
+        public ConnectedCorridorService(Room[] rooms, Road[] roads)
         {
             Rooms = rooms;
             Roads = roads;
