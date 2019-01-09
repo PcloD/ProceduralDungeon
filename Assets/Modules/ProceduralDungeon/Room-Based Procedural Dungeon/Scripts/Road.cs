@@ -20,17 +20,18 @@ namespace ProceduralDungeon
         {
             m_isVertical = corridor.IsVertical;
             m_start = new Vector3(corridor.Rect.x, 0, corridor.Rect.y);
-            m_end = new Vector3(corridor.Rect.x + corridor.Rect.width, corridor.Rect.y + corridor.Rect.height);
 
             if(m_isVertical)
             {
                 m_start.x += 0.5f;
-                m_end.x += 0.5f;
+                m_end = m_start;
+                m_end.z += corridor.Rect.height;
             }
             else
             {
                 m_start.z += 0.5f;
-                m_end.z += 0.5f;
+                m_end = m_start;
+                m_end.x += corridor.Rect.width;
             }
 
             UpdateBorders();
