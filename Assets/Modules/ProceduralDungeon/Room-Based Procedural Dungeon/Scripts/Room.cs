@@ -26,8 +26,8 @@ namespace ProceduralDungeon
         public Room(IntRect rect)
         {
             m_rect = rect;
-            m_center = new Vector3(rect.center.x, 0, rect.center.y);
-            m_size = new Vector3(rect.width, 0, rect.height);
+            m_center = new Vector3(rect.Center.x, 0, rect.Center.y);
+            m_size = new Vector3(rect.Width, 0, rect.Height);
             m_priority = (int)(m_size.x * m_size.z);
 
             UpdateCenterBias();

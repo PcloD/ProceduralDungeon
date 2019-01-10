@@ -84,8 +84,8 @@ namespace ProceduralDungeon
 
         private bool IsValidRoom(IntRect rect)
         {
-            if (rect.minBorder.x < 0 || rect.maxBorder.x > m_mapSize.x ||
-                rect.minBorder.z < 0 || rect.maxBorder.z > m_mapSize.z)
+            if (rect.MinBorder.x < 0 || rect.MaxBorder.x > m_mapSize.x ||
+                rect.MinBorder.z < 0 || rect.MaxBorder.z > m_mapSize.z)
             {
                 return false;
             }
@@ -100,8 +100,8 @@ namespace ProceduralDungeon
                     continue;
                 }
 
-                if (Mathf.Abs(cacheRoom.Rect.center.x - rect.center.x + 1) < (cacheRoom.Rect.width + rect.width) &&
-                    Mathf.Abs(cacheRoom.Rect.center.y - rect.center.y + 1) < (cacheRoom.Rect.height + rect.height))
+                if (Mathf.Abs(cacheRoom.Rect.Center.x - rect.Center.x + 1) < (cacheRoom.Rect.Width + rect.Width) &&
+                    Mathf.Abs(cacheRoom.Rect.Center.y - rect.Center.y + 1) < (cacheRoom.Rect.Height + rect.Height))
                 {
                     return false;
                 }

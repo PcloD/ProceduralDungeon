@@ -19,19 +19,19 @@ namespace ProceduralDungeon
         public Road(Corridor corridor)
         {
             m_isVertical = corridor.IsVertical;
-            m_start = new Vector3(corridor.Rect.x, 0, corridor.Rect.y);
+            m_start = new Vector3(corridor.Rect.X, 0, corridor.Rect.Y);
 
             if(m_isVertical)
             {
                 m_start.x += 0.5f;
                 m_end = m_start;
-                m_end.z += corridor.Rect.height;
+                m_end.z += corridor.Rect.Height;
             }
             else
             {
                 m_start.z += 0.5f;
                 m_end = m_start;
-                m_end.x += corridor.Rect.width;
+                m_end.x += corridor.Rect.Width;
             }
 
             UpdateBorders();

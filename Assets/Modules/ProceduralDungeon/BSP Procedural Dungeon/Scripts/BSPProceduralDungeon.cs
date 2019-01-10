@@ -117,7 +117,7 @@ namespace ProceduralDungeon
         public override Vector3 GetRandomPosition()
         {
             IntRect roomRect = GetRandomNode().Room.Rect;
-            return new Vector3(roomRect.center.x, 0, roomRect.center.y);
+            return new Vector3(roomRect.Center.x, 0, roomRect.Center.y);
         }
 
         private BSPNode GetRandomNode()
@@ -225,10 +225,10 @@ namespace ProceduralDungeon
 
         private void DrawRect(IntRect rect)
         {
-            Gizmos.DrawLine(new Vector3(rect.x, 0, rect.y), new Vector3(rect.x + rect.width, 0, rect.y));
-            Gizmos.DrawLine(new Vector3(rect.x, 0, rect.y + rect.height), new Vector3(rect.x + rect.width, 0, rect.y + rect.height));
-            Gizmos.DrawLine(new Vector3(rect.x, 0, rect.y), new Vector3(rect.x, 0, rect.y + rect.height));
-            Gizmos.DrawLine(new Vector3(rect.x + rect.width, 0, rect.y), new Vector3(rect.x + rect.width, 0, rect.y + rect.height));
+            Gizmos.DrawLine(new Vector3(rect.X, 0, rect.Y), new Vector3(rect.X + rect.Width, 0, rect.Y));
+            Gizmos.DrawLine(new Vector3(rect.X, 0, rect.Y + rect.Height), new Vector3(rect.X + rect.Width, 0, rect.Y + rect.Height));
+            Gizmos.DrawLine(new Vector3(rect.X, 0, rect.Y), new Vector3(rect.X, 0, rect.Y + rect.Height));
+            Gizmos.DrawLine(new Vector3(rect.X + rect.Width, 0, rect.Y), new Vector3(rect.X + rect.Width, 0, rect.Y + rect.Height));
         }
     }
 }

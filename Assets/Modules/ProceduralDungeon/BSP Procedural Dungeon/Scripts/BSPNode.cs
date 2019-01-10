@@ -61,12 +61,12 @@ namespace BinarySpacePartitioning
 
         private bool CanVerticalSplit()
         {
-            if(m_rect.width < m_minBSPSize.x * 2)
+            if(m_rect.Width < m_minBSPSize.x * 2)
             {
                 return false;
             }
 
-            if((float)m_rect.width / m_rect.height < MAX_RATIO)
+            if((float)m_rect.Width / m_rect.Height < MAX_RATIO)
             {
                 return false;
             }
@@ -76,12 +76,12 @@ namespace BinarySpacePartitioning
 
         private bool CanHorizontalSplit()
         {
-            if (m_rect.height < m_minBSPSize.z * 2)
+            if (m_rect.Height < m_minBSPSize.z * 2)
             {
                 return false;
             }
 
-            if ((float)m_rect.height / m_rect.width < MAX_RATIO)
+            if ((float)m_rect.Height / m_rect.Width < MAX_RATIO)
             {
                 return false;
             }
@@ -108,25 +108,25 @@ namespace BinarySpacePartitioning
 
             if (m_splitDice == 0)
             {
-                int randomWidth = (int)Random.Range(m_rect.width * 0.3f, m_rect.width * 0.7f);
-                if(randomWidth < m_minBSPSize.x || m_rect.width - randomWidth < m_minBSPSize.x)
+                int randomWidth = (int)Random.Range(m_rect.Width * 0.3f, m_rect.Width * 0.7f);
+                if(randomWidth < m_minBSPSize.x || m_rect.Width - randomWidth < m_minBSPSize.x)
                 {
                     return GetSplitRects();
                 }
 
-                splitRects[0] = new IntRect(m_rect.x, m_rect.y, randomWidth, m_rect.height);
-                splitRects[1] = new IntRect(m_rect.x + randomWidth, m_rect.y, m_rect.width - randomWidth, m_rect.height);
+                splitRects[0] = new IntRect(m_rect.X, m_rect.Y, randomWidth, m_rect.Height);
+                splitRects[1] = new IntRect(m_rect.X + randomWidth, m_rect.Y, m_rect.Width - randomWidth, m_rect.Height);
             }
             else
             {
-                int randomHeight = (int)Random.Range(m_rect.height * 0.3f, m_rect.height * 0.7f);
-                if (randomHeight < m_minBSPSize.z || m_rect.height - randomHeight < m_minBSPSize.z)
+                int randomHeight = (int)Random.Range(m_rect.Height * 0.3f, m_rect.Height * 0.7f);
+                if (randomHeight < m_minBSPSize.z || m_rect.Height - randomHeight < m_minBSPSize.z)
                 {
                     return GetSplitRects();
                 }
 
-                splitRects[0] = new IntRect(m_rect.x, m_rect.y, m_rect.width, randomHeight);
-                splitRects[1] = new IntRect(m_rect.x, m_rect.y + randomHeight, m_rect.width, m_rect.height - randomHeight);
+                splitRects[0] = new IntRect(m_rect.X, m_rect.Y, m_rect.Width, randomHeight);
+                splitRects[1] = new IntRect(m_rect.X, m_rect.Y + randomHeight, m_rect.Width, m_rect.Height - randomHeight);
             }
 
             return splitRects;
@@ -161,12 +161,12 @@ namespace BinarySpacePartitioning
 
         public void GenerateRoomRect()
         {
-            int randomWidth = (int)Random.Range(m_minRoomSizeRatio.x * m_rect.width, m_rect.width);
-            int randomHeight = (int)Random.Range(m_minRoomSizeRatio.y * m_rect.height, m_rect.height);
-            int randomX = Random.Range(0, m_rect.width - randomWidth);
-            int randomY = Random.Range(0, m_rect.height - randomHeight);
+            int randomWidth = (int)Random.Range(m_minRoomSizeRatio.x * m_rect.Width, m_rect.Width);
+            int randomHeight = (int)Random.Range(m_minRoomSizeRatio.y * m_rect.Height, m_rect.Height);
+            int randomX = Random.Range(0, m_rect.Width - randomWidth);
+            int randomY = Random.Range(0, m_rect.Height - randomHeight);
 
-            IntRect roomRect = new IntRect(m_rect.x + randomX, m_rect.y + randomY, randomWidth, randomHeight);
+            IntRect roomRect = new IntRect(m_rect.X + randomX, m_rect.Y + randomY, randomWidth, randomHeight);
             m_room = new Room(roomRect);
             m_validRect = roomRect;
         }
@@ -193,13 +193,13 @@ namespace BinarySpacePartitioning
                 middleValue = 0;
                 for(int i = 0; i < m_leafNodes.Count; i++)
                 {
-                    middleValue += m_leafNodes[i].ValidRect.center.x;
+                    middleValue += m_leafNodes[i].ValidRect.Center.x;
                 }
                 middleValue /= m_leafNodes.Count;
 
                 for (int i = 0; i < m_leafNodes.Count; i++)
                 {
-                    if(m_leafNodes[i].ValidRect.center.x < middleValue)
+                    if(m_leafNodes[i].ValidRect.Center.x < middleValue)
                     {
                         minRect = m_leafNodes[i].GetRectByY(randomValue, true);
                     }
@@ -209,20 +209,20 @@ namespace BinarySpacePartitioning
                     }
                 }
 
-                corridorRect = new IntRect(minRect.x + minRect.width, randomValue, maxRect.x - minRect.x - minRect.width, 1);
+                corridorRect = new IntRect(minRect.X + minRect.Width, randomValue, maxRect.X - minRect.X - minRect.Width, 1);
             }
             else
             {
                 middleValue = 0;
                 for (int i = 0; i < m_leafNodes.Count; i++)
                 {
-                    middleValue += m_leafNodes[i].ValidRect.center.y;
+                    middleValue += m_leafNodes[i].ValidRect.Center.y;
                 }
                 middleValue /= m_leafNodes.Count;
 
                 for (int i = 0; i < m_leafNodes.Count; i++)
                 {
-                    if (m_leafNodes[i].ValidRect.center.y < middleValue)
+                    if (m_leafNodes[i].ValidRect.Center.y < middleValue)
                     {
                         minRect = m_leafNodes[i].GetRectByX(randomValue, true);
                     }
@@ -232,7 +232,7 @@ namespace BinarySpacePartitioning
                     }
                 }
 
-                corridorRect = new IntRect(randomValue, minRect.y + minRect.height, 1, maxRect.y - minRect.y - minRect.height);
+                corridorRect = new IntRect(randomValue, minRect.Y + minRect.Height, 1, maxRect.Y - minRect.Y - minRect.Height);
             }
 
             return new Corridor(corridorRect, m_splitDice != 0);
@@ -246,11 +246,11 @@ namespace BinarySpacePartitioning
 
             if (m_splitDice == 0)
             {
-                randomValue = Random.Range(validCorridorRange.y, validCorridorRange.y + validCorridorRange.height);
+                randomValue = Random.Range(validCorridorRange.Y, validCorridorRange.Y + validCorridorRange.Height);
             }
             else
             {
-                randomValue = Random.Range(validCorridorRange.x, validCorridorRange.x + validCorridorRange.width);
+                randomValue = Random.Range(validCorridorRange.X, validCorridorRange.X + validCorridorRange.Width);
             }
 
             return randomValue;
@@ -269,15 +269,15 @@ namespace BinarySpacePartitioning
                     cacheNode = m_leafNodes[i];
                     cacheRect = validRect;
 
-                    if (cacheNode.ValidRect.y > validRect.y)
+                    if (cacheNode.ValidRect.Y > validRect.Y)
                     {
-                        cacheRect.y = cacheNode.ValidRect.y;
-                        cacheRect.height -= cacheNode.ValidRect.y - validRect.y;
+                        cacheRect.Y = cacheNode.ValidRect.Y;
+                        cacheRect.Height -= cacheNode.ValidRect.Y - validRect.Y;
                     }
 
-                    if (cacheNode.ValidRect.y + cacheNode.ValidRect.height < validRect.y + validRect.height)
+                    if (cacheNode.ValidRect.Y + cacheNode.ValidRect.Height < validRect.Y + validRect.Height)
                     {
-                        cacheRect.height -= validRect.y + validRect.height - cacheNode.ValidRect.y - cacheNode.ValidRect.height;
+                        cacheRect.Height -= validRect.Y + validRect.Height - cacheNode.ValidRect.Y - cacheNode.ValidRect.Height;
                     }
 
                     validRect = cacheRect;
@@ -290,15 +290,15 @@ namespace BinarySpacePartitioning
                     cacheNode = m_leafNodes[i];
                     cacheRect = validRect;
 
-                    if (cacheNode.ValidRect.x > validRect.x)
+                    if (cacheNode.ValidRect.X > validRect.X)
                     {
-                        cacheRect.x = cacheNode.ValidRect.x;
-                        cacheRect.width -= cacheNode.ValidRect.x - validRect.x;
+                        cacheRect.X = cacheNode.ValidRect.X;
+                        cacheRect.Width -= cacheNode.ValidRect.X - validRect.X;
                     }
 
-                    if (cacheNode.ValidRect.x + cacheNode.ValidRect.width < validRect.x + validRect.width)
+                    if (cacheNode.ValidRect.X + cacheNode.ValidRect.Width < validRect.X + validRect.Width)
                     {
-                        cacheRect.width -= validRect.x + validRect.width - cacheNode.ValidRect.x - cacheNode.ValidRect.width;
+                        cacheRect.Width -= validRect.X + validRect.Width - cacheNode.ValidRect.X - cacheNode.ValidRect.Width;
                     }
 
                     validRect = cacheRect;
@@ -320,7 +320,7 @@ namespace BinarySpacePartitioning
                 {
                     for(int i = 1; i < validRects.Count; i++)
                     {
-                        if(validRects[i].x + validRects[i].width > validRect.x + validRect.width)
+                        if(validRects[i].X + validRects[i].Width > validRect.X + validRect.Width)
                         {
                             validRect = validRects[i];
                         }
@@ -330,7 +330,7 @@ namespace BinarySpacePartitioning
                 {
                     for (int i = 1; i < validRects.Count; i++)
                     {
-                        if (validRects[i].x + validRects[i].width < validRect.x + validRect.width)
+                        if (validRects[i].X + validRects[i].Width < validRect.X + validRect.Width)
                         {
                             validRect = validRects[i];
                         }
@@ -371,7 +371,7 @@ namespace BinarySpacePartitioning
                 {
                     for (int i = 1; i < validRects.Count; i++)
                     {
-                        if (validRects[i].y + validRects[i].height > validRect.y + validRect.height)
+                        if (validRects[i].Y + validRects[i].Height > validRect.Y + validRect.Height)
                         {
                             validRect = validRects[i];
                         }
@@ -381,7 +381,7 @@ namespace BinarySpacePartitioning
                 {
                     for (int i = 1; i < validRects.Count; i++)
                     {
-                        if (validRects[i].y + validRects[i].height < validRect.y + validRect.height)
+                        if (validRects[i].Y + validRects[i].Height < validRect.Y + validRect.Height)
                         {
                             validRect = validRects[i];
                         }
@@ -421,26 +421,26 @@ namespace BinarySpacePartitioning
                 cacheNode = m_leafNodes[i];
                 cacheRect = validRect;
 
-                if (cacheNode.ValidRect.x < validRect.x)
+                if (cacheNode.ValidRect.X < validRect.X)
                 {
-                    cacheRect.x = cacheNode.ValidRect.x;
-                    cacheRect.width = validRect.x + validRect.width - cacheNode.ValidRect.x;
+                    cacheRect.X = cacheNode.ValidRect.X;
+                    cacheRect.Width = validRect.X + validRect.Width - cacheNode.ValidRect.X;
                 }
 
-                if(cacheNode.ValidRect.x > validRect.x)
+                if(cacheNode.ValidRect.X > validRect.X)
                 {
-                    cacheRect.width = cacheNode.ValidRect.x + cacheNode.ValidRect.width - validRect.x;
+                    cacheRect.Width = cacheNode.ValidRect.X + cacheNode.ValidRect.Width - validRect.X;
                 }
 
-                if(cacheNode.ValidRect.y < validRect.y)
+                if(cacheNode.ValidRect.Y < validRect.Y)
                 {
-                    cacheRect.y = cacheNode.ValidRect.y;
-                    cacheRect.height = validRect.y + validRect.height - cacheNode.ValidRect.y;
+                    cacheRect.Y = cacheNode.ValidRect.Y;
+                    cacheRect.Height = validRect.Y + validRect.Height - cacheNode.ValidRect.Y;
                 }
 
-                if (cacheNode.ValidRect.y > validRect.y)
+                if (cacheNode.ValidRect.Y > validRect.Y)
                 {
-                    cacheRect.height = cacheNode.ValidRect.y + cacheNode.ValidRect.height - validRect.y;
+                    cacheRect.Height = cacheNode.ValidRect.Y + cacheNode.ValidRect.Height - validRect.Y;
                 }
 
                 validRect = cacheRect;
