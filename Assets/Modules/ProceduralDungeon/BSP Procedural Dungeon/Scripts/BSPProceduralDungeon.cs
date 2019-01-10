@@ -84,7 +84,12 @@ namespace ProceduralDungeon
                 List<Room> rooms = new List<Room>();
                 for (int i = 0; i < m_leafNodes.Count; i++)
                 {
-                    rooms.Add(new Room(m_leafNodes[i].RoomRect));
+                    if(m_leafNodes[i].Room == null)
+                    {
+                        continue;
+                    }
+
+                    rooms.Add(m_leafNodes[i].Room);
                 }
 
                 List<Road> roads = new List<Road>();
@@ -111,7 +116,7 @@ namespace ProceduralDungeon
 
         public override Vector3 GetRandomPosition()
         {
-            IntRect roomRect = GetRandomNode().RoomRect;
+            IntRect roomRect = GetRandomNode().Room.Rect;
             return new Vector3(roomRect.center.x, 0, roomRect.center.y);
         }
 
@@ -190,7 +195,7 @@ namespace ProceduralDungeon
             Gizmos.color = Color.blue;
             for (int i = 0; i < m_leafNodes.Count; i++)
             {
-                DrawRect(m_leafNodes[i].RoomRect);
+                DrawRect(m_leafNodes[i].Room.Rect);
             }
         }
 

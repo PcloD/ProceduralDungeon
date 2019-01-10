@@ -9,7 +9,7 @@ namespace BinarySpacePartitioning
         private const float MAX_RATIO = 0.45f;
 
         public IntRect Rect { get { return m_rect; } }
-        public IntRect RoomRect { get { return m_roomRect; } }
+        public Room Room { get { return m_room; } }
         public IntRect ValidRect { get { return m_validRect; } }
         public Corridor Corridor { get { return m_corridor; } }
 
@@ -21,7 +21,7 @@ namespace BinarySpacePartitioning
 
         private int m_splitDice; //0: Vertical Split, 1: Horizontal Split
         private List<BSPNode> m_leafNodes;
-        private IntRect m_roomRect;
+        private Room m_room;
         private IntRect m_validRect;
         private Corridor m_corridor;
 
@@ -166,8 +166,9 @@ namespace BinarySpacePartitioning
             int randomX = Random.Range(0, m_rect.width - randomWidth);
             int randomY = Random.Range(0, m_rect.height - randomHeight);
 
-            m_roomRect = new IntRect(m_rect.x + randomX, m_rect.y + randomY, randomWidth, randomHeight);
-            m_validRect = m_roomRect;
+            IntRect roomRect = new IntRect(m_rect.x + randomX, m_rect.y + randomY, randomWidth, randomHeight);
+            m_room = new Room(roomRect);
+            m_validRect = roomRect;
         }
 
         public void GenerateCorridorRect()
@@ -342,9 +343,9 @@ namespace BinarySpacePartitioning
 
         private void GetRectsByY(ref List<IntRect> rects, int y)
         {
-            if (m_roomRect.InBoundaryY(y))
+            if (m_room != null && m_room.Rect.InBoundaryY(y))
             {
-                rects.Add(m_roomRect);
+                rects.Add(m_room.Rect);
             }
 
             if (m_corridor != null && m_corridor.Rect.InBoundaryY(y))
@@ -393,9 +394,9 @@ namespace BinarySpacePartitioning
 
         private void GetRectsByX(ref List<IntRect> rects, int x)
         {
-            if (m_roomRect.InBoundaryX(x))
+            if (m_room != null && m_room.Rect.InBoundaryX(x))
             {
-                rects.Add(m_roomRect);
+                rects.Add(m_room.Rect);
             }
 
             if (m_corridor != null && m_corridor.Rect.InBoundaryX(x))

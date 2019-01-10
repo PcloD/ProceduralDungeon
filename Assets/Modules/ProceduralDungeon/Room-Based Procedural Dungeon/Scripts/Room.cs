@@ -5,6 +5,7 @@ namespace ProceduralDungeon
 {
     public class Room
     {
+        public IntRect Rect { get { return m_rect; } }
         public Vector3 Center { get { return m_center; } }
         public Vector3 CenterBias { get { return m_centerBias; } }
         public Vector3 Size { get { return m_size; } }
@@ -12,6 +13,7 @@ namespace ProceduralDungeon
         public Vector3 MaxBorder { get { return m_maxBorder; } }
         public int Priority { get { return m_priority; } }
 
+        private IntRect m_rect;
         private Vector3 m_center;
         private Vector3 m_centerBias;
         private Vector3 m_size;
@@ -23,6 +25,7 @@ namespace ProceduralDungeon
 
         public Room(IntRect rect)
         {
+            m_rect = rect;
             m_center = new Vector3(rect.center.x, 0, rect.center.y);
             m_size = new Vector3(rect.width, 0, rect.height);
             m_priority = (int)(m_size.x * m_size.z);
