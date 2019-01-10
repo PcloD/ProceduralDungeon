@@ -35,17 +35,6 @@ namespace ProceduralDungeon
             UpdateCorners();
         }
 
-        public Room(Vector3 center, Vector3 size)
-        {
-            m_center = center;
-            m_size = size;
-            m_priority = (int)(m_size.x * m_size.z);
-
-            UpdateCenterBias();
-            UpdateBorder();
-            UpdateCorners();
-        }
-
         private void UpdateCenterBias()
         {
             m_centerBias = Vector3.zero;

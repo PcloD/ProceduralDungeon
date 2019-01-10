@@ -68,47 +68,46 @@ namespace ProceduralDungeon
 
         private Room CreateRoom()
         {
-            Vector3 size = Vector3.zero;
-            Vector3 center = Vector3.zero;
+            int width = Random.Range(m_minRoomSize.x, m_maxRoomSize.x + 1);
+            int height = Random.Range(m_minRoomSize.z, m_maxRoomSize.z + 1);
+            int x = Random.Range(0, m_mapSize.x - width + 1);
+            int y = Random.Range(0, m_mapSize.z - height + 1);
 
-            size.x = Random.Range(m_minRoomSize.x, m_maxRoomSize.x + 1);
-            size.z = Random.Range(m_minRoomSize.z, m_maxRoomSize.z + 1);
-            center.x = Random.Range(1, m_mapSize.x);
-            center.z = Random.Range(1, m_mapSize.z);
-
-            if((int)size.x % 2 == 1)
-            {
-                int random = Random.Range(0, 2);
-                if(random == 0)
-                {
-                    center.x -= -0.5f;
-                }
-                else
-                {
-                    center.x += 0.5f;
-                }
-            }
-
-            if ((int)size.z % 2 == 1)
-            {
-                int random = Random.Range(0, 2);
-                if (random == 0)
-                {
-                    center.z -= -0.5f;
-                }
-                else
-                {
-                    center.z += 0.5f;
-                }
-            }
-
-            if (IsValidRoom(center, size))
+            IntRect rect = new IntRect(x, y, width, height);
+            if(!IsValidRoom(rect))
             {
                 return null;
             }
 
-            Room room = new Room(center, size);
-            return room;
+            return new Room(rect);
+        }
+
+        private bool IsValidRoom(IntRect rect)
+        {
+            if (rect.minBorder.x < 0 || rect.maxBorder.x > m_mapSize.x ||
+                rect.minBorder.z < 0 || rect.maxBorder.z > m_mapSize.z)
+            {
+                return false;
+            }
+
+            Room cacheRoom;
+            for (int i = 0; i < m_roomList.Count; i++)
+            {
+                cacheRoom = m_roomList[i];
+
+                if (cacheRoom == null)
+                {
+                    continue;
+                }
+
+                if (Mathf.Abs(cacheRoom.Rect.center.x - rect.center.x + 1) < (cacheRoom.Rect.width + rect.width) &&
+                    Mathf.Abs(cacheRoom.Rect.center.y - rect.center.y + 1) < (cacheRoom.Rect.height + rect.height))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private bool IsValidRoom(Vector3 center, Vector3 size)
