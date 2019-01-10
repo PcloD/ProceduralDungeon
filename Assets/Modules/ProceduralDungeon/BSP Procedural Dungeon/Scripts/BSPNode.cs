@@ -312,6 +312,11 @@ namespace BinarySpacePartitioning
         {
             List<IntRect> validRects = new List<IntRect>();
             GetRectsByY(ref validRects, y);
+            if(validRects.Count == 0)
+            {
+                return new IntRect();
+            }
+
             IntRect validRect = validRects[0];
 
             if(validRects.Count > 1)
@@ -363,6 +368,11 @@ namespace BinarySpacePartitioning
         {
             List<IntRect> validRects = new List<IntRect>();
             GetRectsByX(ref validRects, x);
+            if (validRects.Count == 0)
+            {
+                return new IntRect();
+            }
+
             IntRect validRect = validRects[0];
 
             if (validRects.Count > 1)

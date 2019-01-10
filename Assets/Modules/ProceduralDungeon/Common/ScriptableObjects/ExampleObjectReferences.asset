@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51256591ca6e94280809cbe327150836, type: 3}
+  m_Name: ExampleObjectReferences
+  m_EditorClassIdentifier: 
+  RoomGroundRefs:
+  - {fileID: 6863579379633953185, guid: 04624b610a7f84349a4b5dcf9f14cbfb, type: 3}
+  RoomWallRefs:
+  - {fileID: 7122301244773315524, guid: 2d84081083dbe48a988da809eb7dc69b, type: 3}
+  RoadGroundRefs:
+  - {fileID: 6863579379633953185, guid: 04624b610a7f84349a4b5dcf9f14cbfb, type: 3}
+  RoadWallRefs:
+  - {fileID: 7122301244773315524, guid: 2d84081083dbe48a988da809eb7dc69b, type: 3}
+  PillarRefs:
+  - {fileID: 7343421044097804419, guid: a8274d20f2b424827a855ba3a676514d, type: 3}

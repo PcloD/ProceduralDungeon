@@ -6,15 +6,11 @@ namespace ProceduralDungeon
 {
     public class BSPProceduralDungeon : BaseProceduralDungeon
     {
-        [Header("Objects")]
-        [SerializeField] private GameObject[] m_roomGroundObjs;
-        [SerializeField] private GameObject[] m_roomWallObjs;
-        [SerializeField] private GameObject[] m_roadGroundObjs;
-        [SerializeField] private GameObject[] m_roadWallObjs;
-        [SerializeField] private GameObject[] m_pillarObjs;
+        [Header("Object References")]
+        [SerializeField] private ObjectReferences m_objectRefs;
         [SerializeField] private bool m_generateObjs;
 
-        [Header("Settings")]
+        [Header("Dungeon Settings")]
         [SerializeField] private IntVector2 m_mapSize = new IntVector2(10, 10);
         [SerializeField] private int m_splitIteration = 1;
         [SerializeField] private IntVector2 m_minBSPSize = new IntVector2(3, 3);
@@ -104,13 +100,13 @@ namespace ProceduralDungeon
                 }
 
                 ConnectedCorridorService service = new ConnectedCorridorService(rooms.ToArray(), roads.ToArray());
-                m_roomObjectGenerator = new RoomObjectGenerator(service.Rooms, m_roomGroundObjs, m_roomWallObjs);
-                m_roadObjectGenerator = new RoadObjectGenerator(service.Roads, m_roadGroundObjs, m_roadWallObjs);
+                m_roomObjectGenerator = new RoomObjectGenerator(service.Rooms, m_objectRefs.RoomGroundRefs, m_objectRefs.RoomWallRefs);
+                m_roadObjectGenerator = new RoadObjectGenerator(service.Roads, m_objectRefs.RoadGroundRefs, m_objectRefs.RoadWallRefs);
 
                 List<Wall> walls = new List<Wall>();
                 walls.AddRange(m_roomObjectGenerator.WallList);
                 walls.AddRange(m_roadObjectGenerator.WallList);
-                m_pillarObjectGenerator = new PillarObjectGenerator(m_mapSize, walls.ToArray(), m_pillarObjs);
+                m_pillarObjectGenerator = new PillarObjectGenerator(m_mapSize, walls.ToArray(), m_objectRefs.PillarRefs);
             }
         }
 

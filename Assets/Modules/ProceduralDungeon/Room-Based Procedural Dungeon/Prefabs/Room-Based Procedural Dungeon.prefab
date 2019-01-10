@@ -139,16 +139,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a5122f455e8950498011c0422121c44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_roomGroundObjs:
-  - {fileID: 377745092}
-  m_roomWallObjs:
-  - {fileID: 144098631}
-  m_roadGroundObjs:
-  - {fileID: 377745092}
-  m_roadWallObjs:
-  - {fileID: 144098631}
-  m_pillarObjs:
-  - {fileID: 1702797013141578272}
+  m_objectRefs: {fileID: 11400000, guid: cab6e7c7fa0a34b45b51fed7279f9f37, type: 2}
+  m_generateObjects: 1
   m_gridSize: 1
   m_mapSize:
     x: 20
@@ -161,7 +153,6 @@ MonoBehaviour:
   m_maxRoomSize:
     x: 5
     z: 5
-  m_generateObjects: 1
   m_drawGrid: 0
   m_drawRoom: 0
   m_drawSelectRoom: 0

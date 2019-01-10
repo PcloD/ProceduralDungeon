@@ -39,7 +39,7 @@ namespace ProceduralDungeon
             List<Vector3> roomCenters = new List<Vector3>();
             for (int i = 0; i < m_rooms.Length; i++)
             {
-                roomCenters.Add(m_rooms[i].Center);
+                roomCenters.Add(m_rooms[i].Center + m_rooms[i].CenterBias);
             }
 
             m_voronoiDiagram = new VoronoiDiagram(roomCenters.ToArray(), new VBorder(m_mapSize.x, m_mapSize.z));
