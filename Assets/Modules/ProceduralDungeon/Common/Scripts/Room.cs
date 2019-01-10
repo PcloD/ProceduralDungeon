@@ -98,7 +98,7 @@ namespace ProceduralDungeon
             return false;
         }
 
-        public void AddConnectedRoad(Road road)
+        public void AddConnectedRoad(Corridor road)
         {
             if(m_cullingWalls == null)
             {

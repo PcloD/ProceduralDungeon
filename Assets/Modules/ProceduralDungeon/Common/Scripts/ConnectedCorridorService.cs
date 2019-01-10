@@ -4,15 +4,15 @@ namespace ProceduralDungeon
     public class ConnectedCorridorService
     {
         public Room[] Rooms;
-        public Road[] Roads;
+        public Corridor[] Roads;
 
-        public ConnectedCorridorService(Room[] rooms, Road[] roads)
+        public ConnectedCorridorService(Room[] rooms, Corridor[] roads)
         {
             Rooms = rooms;
             Roads = roads;
 
             Room cacheRoom = null;
-            Road cacheRoad = null;
+            Corridor cacheRoad = null;
             for (int i = 0; i < roads.Length; i++)
             {
                 cacheRoad = roads[i];

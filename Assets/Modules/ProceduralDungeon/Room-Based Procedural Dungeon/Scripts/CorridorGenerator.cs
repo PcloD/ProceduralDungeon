@@ -5,20 +5,20 @@ using SpanningTree;
 
 namespace ProceduralDungeon
 {
-    public class RoadGenerator
+    public class CorridorGenerator
     { 
         public VoronoiDiagram VoronoiDiagram { get { return m_voronoiDiagram; } }
         public BaseSpanningTree SpanningTree { get { return m_spanningTree; } }
-        public Road[] Roads { get { return m_roads; } }
+        public Corridor[] Roads { get { return m_roads; } }
 
         private IntVector2 m_mapSize;
         private Room[] m_rooms;
         private VoronoiDiagram m_voronoiDiagram;
         private BaseSpanningTree m_spanningTree;
-        private List<Road> m_roadList;
-        private Road[] m_roads;
+        private List<Corridor> m_roadList;
+        private Corridor[] m_roads;
 
-        public RoadGenerator(IntVector2 mapSize, Room[] rooms)
+        public CorridorGenerator(IntVector2 mapSize, Room[] rooms)
         {
             m_mapSize = mapSize;
             m_rooms = rooms;
@@ -61,7 +61,7 @@ namespace ProceduralDungeon
         {
             if (m_roadList == null)
             {
-                m_roadList = new List<Road>();
+                m_roadList = new List<Corridor>();
             }
             else
             {
@@ -73,7 +73,7 @@ namespace ProceduralDungeon
             Vector3 roadCenter;
             Vector3 roadStartA;
             Vector3 roadStartB;
-            Road cacheRoad;
+            Corridor cacheRoad;
 
             for (int i = 0; i < m_spanningTree.Segments.Count; i++)
             {
@@ -112,7 +112,7 @@ namespace ProceduralDungeon
                         }
                     }
 
-                    cacheRoad = new Road(roadStartA, roadCenter);
+                    cacheRoad = new Corridor(roadStartA, roadCenter);
                     m_roadList.Add(cacheRoad);
                 }
 
@@ -147,7 +147,7 @@ namespace ProceduralDungeon
                         }
                     }
 
-                    cacheRoad = new Road(roadStartB, roadCenter);
+                    cacheRoad = new Corridor(roadStartB, roadCenter);
                     m_roadList.Add(cacheRoad);
                 }
             }
@@ -252,9 +252,9 @@ namespace ProceduralDungeon
 
         private void DividedRoads()
         {
-            Road cacheRoad;
-            List<Road> removeRoads = new List<Road>();
-            List<Road> newRoads = new List<Road>();
+            Corridor cacheRoad;
+            List<Corridor> removeRoads = new List<Corridor>();
+            List<Corridor> newRoads = new List<Corridor>();
             List<Room> crossedRooms;
             for (int i = 0; i < m_roadList.Count; i++)
             {
@@ -276,17 +276,17 @@ namespace ProceduralDungeon
 
                     if (cacheRoad.MinBorder < crossedRooms[0].MinBorder.z)
                     {
-                        newRoads.Add(new Road(new Vector3(cacheRoad.Start.x, 0, cacheRoad.MinBorder), new Vector3(cacheRoad.Start.x, 0, crossedRooms[0].MinBorder.z)));
+                        newRoads.Add(new Corridor(new Vector3(cacheRoad.Start.x, 0, cacheRoad.MinBorder), new Vector3(cacheRoad.Start.x, 0, crossedRooms[0].MinBorder.z)));
                     }
 
                     if (cacheRoad.MaxBorder > crossedRooms[crossedRooms.Count - 1].MaxBorder.z)
                     {
-                        newRoads.Add(new Road(new Vector3(cacheRoad.Start.x, 0, crossedRooms[crossedRooms.Count - 1].MaxBorder.z), new Vector3(cacheRoad.Start.x, 0, cacheRoad.MaxBorder)));
+                        newRoads.Add(new Corridor(new Vector3(cacheRoad.Start.x, 0, crossedRooms[crossedRooms.Count - 1].MaxBorder.z), new Vector3(cacheRoad.Start.x, 0, cacheRoad.MaxBorder)));
                     }
 
                     for (int j = 0; j < crossedRooms.Count - 1; j++)
                     {
-                        newRoads.Add(new Road(new Vector3(cacheRoad.Start.x, 0, crossedRooms[j].MaxBorder.z), new Vector3(cacheRoad.Start.x, 0, crossedRooms[j + 1].MinBorder.z)));
+                        newRoads.Add(new Corridor(new Vector3(cacheRoad.Start.x, 0, crossedRooms[j].MaxBorder.z), new Vector3(cacheRoad.Start.x, 0, crossedRooms[j + 1].MinBorder.z)));
                     }
                 }
                 else
@@ -298,17 +298,17 @@ namespace ProceduralDungeon
 
                     if (cacheRoad.MinBorder < crossedRooms[0].MinBorder.x)
                     {
-                        newRoads.Add(new Road(new Vector3(cacheRoad.MinBorder, 0, cacheRoad.Start.z), new Vector3(crossedRooms[0].MinBorder.x, 0, cacheRoad.Start.z)));
+                        newRoads.Add(new Corridor(new Vector3(cacheRoad.MinBorder, 0, cacheRoad.Start.z), new Vector3(crossedRooms[0].MinBorder.x, 0, cacheRoad.Start.z)));
                     }
 
                     if (cacheRoad.MaxBorder > crossedRooms[crossedRooms.Count - 1].MaxBorder.x)
                     {
-                        newRoads.Add(new Road(new Vector3(crossedRooms[crossedRooms.Count - 1].MaxBorder.x, 0, cacheRoad.Start.z), new Vector3(cacheRoad.MaxBorder, 0, cacheRoad.Start.z)));
+                        newRoads.Add(new Corridor(new Vector3(crossedRooms[crossedRooms.Count - 1].MaxBorder.x, 0, cacheRoad.Start.z), new Vector3(cacheRoad.MaxBorder, 0, cacheRoad.Start.z)));
                     }
 
                     for (int j = 0; j < crossedRooms.Count - 1; j++)
                     {
-                        newRoads.Add(new Road(new Vector3(crossedRooms[j].MaxBorder.x, 0, cacheRoad.Start.z), new Vector3(crossedRooms[j + 1].MinBorder.x, 0, cacheRoad.Start.z)));
+                        newRoads.Add(new Corridor(new Vector3(crossedRooms[j].MaxBorder.x, 0, cacheRoad.Start.z), new Vector3(crossedRooms[j + 1].MinBorder.x, 0, cacheRoad.Start.z)));
                     }
                 }
             }
@@ -321,7 +321,7 @@ namespace ProceduralDungeon
             m_roadList.AddRange(newRoads);
         }
 
-        private List<Room> GetRoadCrossedRooms(Road road)
+        private List<Room> GetRoadCrossedRooms(Corridor road)
         {
             List<Room> crossedRooms = new List<Room>();
             Room cacheRoom;

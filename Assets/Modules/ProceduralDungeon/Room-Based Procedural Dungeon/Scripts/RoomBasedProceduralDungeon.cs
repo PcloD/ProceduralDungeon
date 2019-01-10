@@ -27,9 +27,9 @@ namespace ProceduralDungeon
         [SerializeField] private bool m_drawRoads;
 
         private RoomGenerator m_roomGenerator;
-        private RoadGenerator m_roadGenerator;
+        private CorridorGenerator m_roadGenerator;
         private RoomObjectGenerator m_roomObjectGenerator;
-        private RoadObjectGenerator m_roadObjectGenerator;
+        private CorridorObjectGenerator m_roadObjectGenerator;
         private PillarObjectGenerator m_pillarObjectGenerator;
 
         protected override void Destroy()
@@ -55,7 +55,7 @@ namespace ProceduralDungeon
             Destroy();
 
             m_roomGenerator = new RoomGenerator(m_mapSize, m_totalRoomCount, m_selectRoomCount, m_minRoomSize, m_maxRoomSize);
-            m_roadGenerator = new RoadGenerator(m_mapSize, m_roomGenerator.SelectRooms);
+            m_roadGenerator = new CorridorGenerator(m_mapSize, m_roomGenerator.SelectRooms);
 
             if(m_generateObjects)
             {
@@ -64,7 +64,7 @@ namespace ProceduralDungeon
                 m_roomObjectGenerator = new RoomObjectGenerator(service.Rooms, m_objectRefs.RoomGroundRefs, m_objectRefs.RoomWallRefs);
                 m_roomObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
 
-                m_roadObjectGenerator = new RoadObjectGenerator(service.Roads, m_objectRefs.RoadGroundRefs, m_objectRefs.RoadWallRefs);
+                m_roadObjectGenerator = new CorridorObjectGenerator(service.Roads, m_objectRefs.RoadGroundRefs, m_objectRefs.RoadWallRefs);
                 m_roadObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
 
                 List<Wall> walls = new List<Wall>();

@@ -2,42 +2,46 @@
 
 namespace ProceduralDungeon
 {
-    public class Road
+    public class Corridor
     {
+        public IntRect Rect { get { return m_rect; } }
         public Vector3 Start { get { return m_start; } }
         public Vector3 End { get { return m_end; } }
         public bool IsVertical { get { return m_isVertical; } }
         public float MinBorder { get { return m_minBorder; } }
         public float MaxBorder { get { return m_maxBorder; } }
 
+        private IntRect m_rect;
         private Vector3 m_start;
         private Vector3 m_end;
         private bool m_isVertical;
         private float m_minBorder;
         private float m_maxBorder;
 
-        public Road(Corridor corridor)
+        public Corridor(IntRect rect, bool isVertical)
         {
-            m_isVertical = corridor.IsVertical;
-            m_start = new Vector3(corridor.Rect.X, 0, corridor.Rect.Y);
+            m_rect = rect;
+            m_isVertical = isVertical;
 
-            if(m_isVertical)
+            m_start = new Vector3(m_rect.X, 0, m_rect.Y);
+
+            if (m_isVertical)
             {
                 m_start.x += 0.5f;
                 m_end = m_start;
-                m_end.z += corridor.Rect.Height;
+                m_end.z += m_rect.Height;
             }
             else
             {
                 m_start.z += 0.5f;
                 m_end = m_start;
-                m_end.x += corridor.Rect.Width;
+                m_end.x += m_rect.Width;
             }
 
             UpdateBorders();
         }
 
-        public Road(Vector3 start, Vector3 end)
+        public Corridor(Vector3 start, Vector3 end)
         {
             m_start = start;
             m_end = end;

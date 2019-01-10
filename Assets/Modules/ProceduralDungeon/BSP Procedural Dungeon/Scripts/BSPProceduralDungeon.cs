@@ -27,7 +27,7 @@ namespace ProceduralDungeon
         private List<BSPNode> m_parentNodes;
 
         private RoomObjectGenerator m_roomObjectGenerator;
-        private RoadObjectGenerator m_roadObjectGenerator;
+        private CorridorObjectGenerator m_corridorObjectGenerator;
         private PillarObjectGenerator m_pillarObjectGenerator;
 
         protected override void Destroy()
@@ -37,9 +37,9 @@ namespace ProceduralDungeon
                 m_roomObjectGenerator.Destroy();
             }
 
-            if (m_roadObjectGenerator != null)
+            if (m_corridorObjectGenerator != null)
             {
-                m_roadObjectGenerator.Destroy();
+                m_corridorObjectGenerator.Destroy();
             }
 
             if (m_pillarObjectGenerator != null)
@@ -88,7 +88,7 @@ namespace ProceduralDungeon
                     rooms.Add(m_leafNodes[i].Room);
                 }
 
-                List<Road> roads = new List<Road>();
+                List<Corridor> roads = new List<Corridor>();
                 for (int i = 0; i < m_parentNodes.Count; i++)
                 {
                     if (m_parentNodes[i].Corridor == null)
@@ -96,16 +96,16 @@ namespace ProceduralDungeon
                         continue;
                     }
 
-                    roads.Add(new Road(m_parentNodes[i].Corridor));
+                    roads.Add(m_parentNodes[i].Corridor);
                 }
 
                 ConnectedCorridorService service = new ConnectedCorridorService(rooms.ToArray(), roads.ToArray());
                 m_roomObjectGenerator = new RoomObjectGenerator(service.Rooms, m_objectRefs.RoomGroundRefs, m_objectRefs.RoomWallRefs);
-                m_roadObjectGenerator = new RoadObjectGenerator(service.Roads, m_objectRefs.RoadGroundRefs, m_objectRefs.RoadWallRefs);
+                m_corridorObjectGenerator = new CorridorObjectGenerator(service.Roads, m_objectRefs.RoadGroundRefs, m_objectRefs.RoadWallRefs);
 
                 List<Wall> walls = new List<Wall>();
                 walls.AddRange(m_roomObjectGenerator.WallList);
-                walls.AddRange(m_roadObjectGenerator.WallList);
+                walls.AddRange(m_corridorObjectGenerator.WallList);
                 m_pillarObjectGenerator = new PillarObjectGenerator(m_mapSize, walls.ToArray(), m_objectRefs.PillarRefs);
             }
         }

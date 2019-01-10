@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 namespace ProceduralDungeon
 {
-    public class RoadObjectGenerator
+    public class CorridorObjectGenerator
     {
         public Transform Parent { get { return m_parent; } }
         public List<Wall> WallList { get { return m_wallList; } }
 
-        private Road[] m_roads;
+        private Corridor[] m_roads;
         private GameObject[] m_groundObjs;
         private GameObject[] m_wallObjs;
         private Transform m_parent;
         private List<Ground> m_groundList;
         private List<Wall> m_wallList;
 
-        public RoadObjectGenerator(Road[] roads, GameObject[] groundObjs, GameObject[] wallObjs)
+        public CorridorObjectGenerator(Corridor[] roads, GameObject[] groundObjs, GameObject[] wallObjs)
         {
             m_roads = roads;
             m_groundObjs = groundObjs;
@@ -61,7 +61,7 @@ namespace ProceduralDungeon
                 return;
             }
 
-            Road cacheRoad = null;
+            Corridor cacheRoad = null;
             int indexX;
             int indexZ;
             int minValue;
@@ -116,7 +116,7 @@ namespace ProceduralDungeon
                 return;
             }
 
-            Road cacheRoad = null;
+            Corridor cacheRoad = null;
             int indexX;
             int indexZ;
             int minValue;
@@ -174,7 +174,7 @@ namespace ProceduralDungeon
         private void RemoveCrossedWalls()
         {
             Wall cacheWall = null;
-            Road cacheRoad = null;
+            Corridor cacheRoad = null;
             List<Wall> crossedWalls = new List<Wall>();
             for(int i = 0; i < m_wallList.Count; i++)
             {
