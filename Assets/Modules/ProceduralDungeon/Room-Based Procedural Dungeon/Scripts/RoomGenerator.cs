@@ -110,34 +110,6 @@ namespace ProceduralDungeon
             return true;
         }
 
-        private bool IsValidRoom(Vector3 center, Vector3 size)
-        {
-            if (center.x - size.x / 2 < 0 || center.x + size.x / 2 > m_mapSize.x ||
-                center.z - size.z / 2 < 0 || center.z + size.z / 2 > m_mapSize.z)
-            {
-                return true;
-            }
-
-            Room cacheRoom;
-            for(int i = 0; i < m_roomList.Count; i++)
-            {
-                cacheRoom = m_roomList[i];
-
-                if(cacheRoom == null)
-                {
-                    continue;
-                }
-
-                if(Mathf.Abs(cacheRoom.Center.x - center.x) < (cacheRoom.Size.x + size.x) * 0.7f &&
-                    Mathf.Abs(cacheRoom.Center.z - center.z) < (cacheRoom.Size.z + size.z) * 0.7f)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         private void GenerateSelectRooms()
         {
             m_roomList.Sort(delegate (Room x, Room y)
