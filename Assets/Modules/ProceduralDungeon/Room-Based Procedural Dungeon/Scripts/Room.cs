@@ -20,8 +20,8 @@ namespace ProceduralDungeon
         private Vector3 m_minBorder;
         private Vector3 m_maxBorder;
         private int m_priority;
-        private List<Wall> m_cullingWalls;
         private List<Vector3> m_cornerPositions;
+        private List<Wall> m_cullingWalls;
 
         public Room(IntRect rect)
         {
