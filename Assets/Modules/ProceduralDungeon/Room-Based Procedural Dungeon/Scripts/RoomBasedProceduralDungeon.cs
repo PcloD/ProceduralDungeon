@@ -152,16 +152,16 @@ namespace ProceduralDungeon
                     continue;
                 }
 
-                leftUp = cacheRoom.Center + new Vector3(-cacheRoom.Size.x / 2, 0, cacheRoom.Size.z / 2);
-                rightUp = cacheRoom.Center + new Vector3(cacheRoom.Size.x / 2, 0, cacheRoom.Size.z / 2);
-                leftBottom = cacheRoom.Center + new Vector3(-cacheRoom.Size.x / 2, 0, -cacheRoom.Size.z / 2);
-                rightBottom = cacheRoom.Center + new Vector3(cacheRoom.Size.x / 2, 0, -cacheRoom.Size.z / 2);
+                leftBottom = new Vector3(cacheRoom.MinBorder.x, 0, cacheRoom.MinBorder.z);
+                rightBottom = new Vector3(cacheRoom.MaxBorder.x, 0, cacheRoom.MinBorder.z);
+                leftUp = new Vector3(cacheRoom.MinBorder.x, 0, cacheRoom.MaxBorder.z);
+                rightUp = new Vector3(cacheRoom.MaxBorder.x, 0, cacheRoom.MaxBorder.z);
 
                 Gizmos.DrawSphere(cacheRoom.Center, 0.1f);
+                Gizmos.DrawLine(leftBottom, rightBottom);
                 Gizmos.DrawLine(leftUp, rightUp);
-                Gizmos.DrawLine(rightUp, rightBottom);
-                Gizmos.DrawLine(rightBottom, leftBottom);
                 Gizmos.DrawLine(leftBottom, leftUp);
+                Gizmos.DrawLine(rightBottom, rightUp);
             }
         }
 
@@ -188,16 +188,17 @@ namespace ProceduralDungeon
             for (int i = 0; i < m_roomGenerator.SelectRooms.Length; i++)
             {
                 cacheRoom = m_roomGenerator.SelectRooms[i];
-                leftUp = cacheRoom.Center + new Vector3(-cacheRoom.Size.x / 2, 0, cacheRoom.Size.z / 2);
-                rightUp = cacheRoom.Center + new Vector3(cacheRoom.Size.x / 2, 0, cacheRoom.Size.z / 2);
-                leftBottom = cacheRoom.Center + new Vector3(-cacheRoom.Size.x / 2, 0, -cacheRoom.Size.z / 2);
-                rightBottom = cacheRoom.Center + new Vector3(cacheRoom.Size.x / 2, 0, -cacheRoom.Size.z / 2);
+
+                leftBottom = new Vector3(cacheRoom.MinBorder.x, 0, cacheRoom.MinBorder.z);
+                rightBottom = new Vector3(cacheRoom.MaxBorder.x, 0, cacheRoom.MinBorder.z);
+                leftUp = new Vector3(cacheRoom.MinBorder.x, 0, cacheRoom.MaxBorder.z);
+                rightUp = new Vector3(cacheRoom.MaxBorder.x, 0, cacheRoom.MaxBorder.z);
 
                 Gizmos.DrawSphere(cacheRoom.Center, 0.1f);
+                Gizmos.DrawLine(leftBottom, rightBottom);
                 Gizmos.DrawLine(leftUp, rightUp);
-                Gizmos.DrawLine(rightUp, rightBottom);
-                Gizmos.DrawLine(rightBottom, leftBottom);
                 Gizmos.DrawLine(leftBottom, leftUp);
+                Gizmos.DrawLine(rightBottom, rightUp);
             }
 
             if (m_drawSelectRoomCenterBias)

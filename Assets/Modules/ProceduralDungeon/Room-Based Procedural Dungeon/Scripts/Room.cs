@@ -68,13 +68,8 @@ namespace ProceduralDungeon
 
         private void UpdateBorder()
         {
-            m_minBorder = Vector3.zero;
-            m_maxBorder = Vector3.zero;
-
-            m_minBorder.x = m_center.x - m_size.x / 2;
-            m_maxBorder.x = m_center.x + m_size.x / 2;
-            m_minBorder.z = m_center.z - m_size.z / 2;
-            m_maxBorder.z = m_center.z + m_size.z / 2;
+            m_minBorder = new Vector3(m_rect.MinBorder.x, 0, m_rect.MinBorder.z);
+            m_maxBorder = new Vector3(m_rect.MaxBorder.x, 0, m_rect.MaxBorder.z);
         }
 
         private void UpdateCorners()
@@ -92,10 +87,10 @@ namespace ProceduralDungeon
 
         public bool InBoundary(Vector3 point)
         {
-            if (point.x >= m_center.x - m_size.x / 2 &&
-                point.x <= m_center.x + m_size.x / 2 &&
-                point.z >= m_center.z - m_size.z / 2 &&
-                point.z <= m_center.z + m_size.z / 2)
+            if (point.x >= m_minBorder.x &&
+                point.x <= m_maxBorder.x &&
+                point.z >= m_minBorder.z &&
+                point.z <= m_maxBorder.z)
             {
                 return true;
             }
