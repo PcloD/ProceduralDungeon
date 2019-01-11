@@ -29,24 +29,27 @@ namespace ProceduralDungeon
         private RoomGenerator m_roomGenerator;
         private CorridorGenerator m_roadGenerator;
         private RoomObjectGenerator m_roomObjectGenerator;
-        private CorridorObjectGenerator m_roadObjectGenerator;
+        private CorridorObjectGenerator m_corridorObjectGenerator;
         private PillarObjectGenerator m_pillarObjectGenerator;
 
-        protected override void Destroy()
+        public override void Destroy()
         {
             if (m_roomObjectGenerator != null)
             {
                 m_roomObjectGenerator.Destroy();
+                m_roomObjectGenerator = null;
             }
 
-            if (m_roadObjectGenerator != null)
+            if (m_corridorObjectGenerator != null)
             {
-                m_roadObjectGenerator.Destroy();
+                m_corridorObjectGenerator.Destroy();
+                m_corridorObjectGenerator = null;
             }
 
             if (m_pillarObjectGenerator != null)
             {
                 m_pillarObjectGenerator.Destroy();
+                m_pillarObjectGenerator = null;
             }
         }
 
@@ -63,15 +66,18 @@ namespace ProceduralDungeon
 
                 m_roomObjectGenerator = new RoomObjectGenerator(service.Rooms, m_objectRefs.RoomGroundRefs, m_objectRefs.RoomWallRefs);
                 m_roomObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
+                m_roomObjectGenerator.Parent.SetParent(m_parent);
 
-                m_roadObjectGenerator = new CorridorObjectGenerator(service.Roads, m_objectRefs.RoadGroundRefs, m_objectRefs.RoadWallRefs);
-                m_roadObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
+                m_corridorObjectGenerator = new CorridorObjectGenerator(service.Roads, m_objectRefs.RoadGroundRefs, m_objectRefs.RoadWallRefs);
+                m_corridorObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
+                m_corridorObjectGenerator.Parent.SetParent(m_parent);
 
                 List<Wall> walls = new List<Wall>();
                 walls.AddRange(m_roomObjectGenerator.WallList);
-                walls.AddRange(m_roadObjectGenerator.WallList);
+                walls.AddRange(m_corridorObjectGenerator.WallList);
                 m_pillarObjectGenerator = new PillarObjectGenerator(m_mapSize, walls.ToArray(), m_objectRefs.PillarRefs);
                 m_pillarObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
+                m_pillarObjectGenerator.Parent.SetParent(m_parent);
             }
         }
 
