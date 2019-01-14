@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using Voronoi;
 using SpanningTree;
 
-namespace ProceduralDungeon
+namespace Dungeon
 {
     public class CorridorGenerator
     { 
         public VoronoiDiagram VoronoiDiagram { get { return m_voronoiDiagram; } }
         public BaseSpanningTree SpanningTree { get { return m_spanningTree; } }
-        public Corridor[] Roads { get { return m_roads; } }
+        public Corridor[] Corridors { get { return m_corridors; } }
 
         private IntVector2 m_mapSize;
         private Room[] m_rooms;
         private VoronoiDiagram m_voronoiDiagram;
         private BaseSpanningTree m_spanningTree;
         private List<Corridor> m_roadList;
-        private Corridor[] m_roads;
+        private Corridor[] m_corridors;
 
         public CorridorGenerator(IntVector2 mapSize, Room[] rooms)
         {
@@ -368,7 +368,7 @@ namespace ProceduralDungeon
 
         private void UpdateRoads()
         {
-            m_roads = m_roadList.ToArray();
+            m_corridors = m_roadList.ToArray();
         }
     }
 }

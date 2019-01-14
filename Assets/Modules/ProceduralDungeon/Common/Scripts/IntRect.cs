@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ProceduralDungeon
+namespace Dungeon
 {
     [System.Serializable]
     public struct IntRect

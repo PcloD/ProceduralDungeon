@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using ProceduralDungeon;
+using Dungeon;
 
 namespace BinarySpacePartitioning
 {

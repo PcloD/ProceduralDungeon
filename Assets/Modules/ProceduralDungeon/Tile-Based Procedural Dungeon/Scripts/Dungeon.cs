@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using SpanningTree;
 
-namespace ProceduralDungeon.SpanningTree
+namespace Dungeon.SpanningTree
 {
     public class Dungeon
     {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace ProceduralDungeon
+namespace Dungeon
 {
     public class RoomObjectGenerator
     {

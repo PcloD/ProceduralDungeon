@@ -1,17 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
-namespace ProceduralDungeon
+namespace Dungeon
 {
     public class RoomBasedProceduralDungeon : BaseProceduralDungeon
     {
-        [Header("Object References")]
-        [SerializeField] private ObjectReferences m_objectRefs;
-        [SerializeField] private bool m_generateObjects;
-
         [Header("Dungeon Settings")]
-        [SerializeField] private int m_gridSize = 1;
-        [SerializeField] private IntVector2 m_mapSize;
         [SerializeField] private int m_totalRoomCount;
         [SerializeField] private int m_selectRoomCount;
         [SerializeField] private IntVector2 m_minRoomSize;
@@ -28,57 +21,12 @@ namespace ProceduralDungeon
 
         private RoomGenerator m_roomGenerator;
         private CorridorGenerator m_roadGenerator;
-        private RoomObjectGenerator m_roomObjectGenerator;
-        private CorridorObjectGenerator m_corridorObjectGenerator;
-        private PillarObjectGenerator m_pillarObjectGenerator;
-
-        public override void Destroy()
-        {
-            if (m_roomObjectGenerator != null)
-            {
-                m_roomObjectGenerator.Destroy();
-                m_roomObjectGenerator = null;
-            }
-
-            if (m_corridorObjectGenerator != null)
-            {
-                m_corridorObjectGenerator.Destroy();
-                m_corridorObjectGenerator = null;
-            }
-
-            if (m_pillarObjectGenerator != null)
-            {
-                m_pillarObjectGenerator.Destroy();
-                m_pillarObjectGenerator = null;
-            }
-        }
 
         protected override void StartGenerate()
         {
-            Destroy();
-
             m_roomGenerator = new RoomGenerator(m_mapSize, m_totalRoomCount, m_selectRoomCount, m_minRoomSize, m_maxRoomSize);
             m_roadGenerator = new CorridorGenerator(m_mapSize, m_roomGenerator.SelectRooms);
-
-            if(m_generateObjects)
-            {
-                ConnectedCorridorService service = new ConnectedCorridorService(m_roomGenerator.SelectRooms, m_roadGenerator.Roads);
-
-                m_roomObjectGenerator = new RoomObjectGenerator(service.Rooms, m_objectRefs.RoomGroundRefs, m_objectRefs.RoomWallRefs);
-                m_roomObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
-                m_roomObjectGenerator.Parent.SetParent(m_parent);
-
-                m_corridorObjectGenerator = new CorridorObjectGenerator(service.Roads, m_objectRefs.RoadGroundRefs, m_objectRefs.RoadWallRefs);
-                m_corridorObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
-                m_corridorObjectGenerator.Parent.SetParent(m_parent);
-
-                List<Wall> walls = new List<Wall>();
-                walls.AddRange(m_roomObjectGenerator.WallList);
-                walls.AddRange(m_corridorObjectGenerator.WallList);
-                m_pillarObjectGenerator = new PillarObjectGenerator(m_mapSize, walls.ToArray(), m_objectRefs.PillarRefs);
-                m_pillarObjectGenerator.Parent.localScale = Vector3.one * m_gridSize;
-                m_pillarObjectGenerator.Parent.SetParent(m_parent);
-            }
+            GenerateObjects(m_roomGenerator.SelectRooms, m_roadGenerator.Corridors);
         }
 
         public override Vector3 GetRandomPosition()
@@ -269,16 +217,16 @@ namespace ProceduralDungeon
             }
 
             if (m_roadGenerator == null ||
-                m_roadGenerator.Roads == null ||
-                m_roadGenerator.Roads.Length == 0)
+                m_roadGenerator.Corridors == null ||
+                m_roadGenerator.Corridors.Length == 0)
             {
                 return;
             }
 
             Gizmos.color = Color.blue;
-            for (int i = 0; i < m_roadGenerator.Roads.Length; i++)
+            for (int i = 0; i < m_roadGenerator.Corridors.Length; i++)
             {
-                Gizmos.DrawLine(m_roadGenerator.Roads[i].Start, m_roadGenerator.Roads[i].End);
+                Gizmos.DrawLine(m_roadGenerator.Corridors[i].Start, m_roadGenerator.Corridors[i].End);
             }
         }
     }

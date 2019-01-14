@@ -1,5 +1,5 @@
 ﻿
-namespace ProceduralDungeon
+namespace Dungeon
 {
     [System.Serializable]
     public struct IntVector2

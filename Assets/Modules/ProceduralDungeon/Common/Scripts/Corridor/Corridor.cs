@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ProceduralDungeon
+namespace Dungeon
 {
     public class Corridor
     {

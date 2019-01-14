@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ProceduralDungeon
+namespace Dungeon
 {
     [CreateAssetMenu(menuName = "Procedural Dungeon/Object References")]
     public class ObjectReferences : ScriptableObject

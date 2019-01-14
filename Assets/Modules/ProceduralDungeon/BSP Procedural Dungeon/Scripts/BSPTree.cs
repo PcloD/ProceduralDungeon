@@ -1,4 +1,4 @@
-﻿using ProceduralDungeon;
+﻿using Dungeon;
 using UnityEngine;
 using System.Collections.Generic;
 

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using SpanningTree;
 
-namespace ProceduralDungeon.SpanningTree
+namespace Dungeon.SpanningTree
 {
     public class TileBasedProceduralDungeon : MonoBehaviour
     {

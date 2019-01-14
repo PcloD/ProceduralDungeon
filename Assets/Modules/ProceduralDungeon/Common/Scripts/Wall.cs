@@ -1,5 +1,5 @@
 ﻿
-namespace ProceduralDungeon
+namespace Dungeon
 {
     public class Wall
     {
